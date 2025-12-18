@@ -7,5 +7,18 @@ import java.time.LocalDate;
 public class Shipment{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    private Vehicle vehicle;
+
+    @ManyToOne
+    private Location pickupLocation;
+
+    @ManyToOne
+    private Location dropLocation;
+
+    private Double weightKg;
+    private LocalDate scheduledDate;
 }
