@@ -17,5 +17,5 @@ public class Vehicle{
 
     private Double capacityKg;
 
-    private Double fuel
+    private Double fuelEfficiency;
 }
