@@ -1,6 +1,12 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+
 
 @Entity
 public class Location{
@@ -10,6 +16,6 @@ public class Location{
     private Long id;
 
     private String name;
-    private Deouble latitude;
+    private Double latitude;
     private Double longitude;
 }

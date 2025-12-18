@@ -1,7 +1,11 @@
 package com.example.demo.entity;
 
-import jakarta.persistance.*;
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
 @Entity
 @Table(name="users")
 public class User{
@@ -13,7 +17,7 @@ public class User{
 
     @Column(unique = true) private String email;
 
-    private Sting password;
+    private String password;
 
     private String role;
 }
