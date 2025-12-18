@@ -11,5 +11,12 @@ public class RouteOptimizationResult{
     private Long id;
 
     @ManyToOne
+    private Shipment shipment;
+
+    private Double optimizedDistanceKm;
+    private Double estimatedFuelUsageL;
+
+    private LocalDateTime generatedAt = LocalDateTime.now();.
+
     
 }
