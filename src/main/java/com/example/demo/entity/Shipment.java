@@ -4,21 +4,28 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-public class Shipment{
-
+@Table(name = "shipments")
+public class Shipment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Double weightKg;
+    private LocalDate scheduledDate;
+
     @ManyToOne
     private Vehicle vehicle;
 
-    @ManyToOne
-    private Location pickupLocation;
+    // Getters and setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    @ManyToOne
-    private Location dropLocation;
+    public Double getWeightKg() { return weightKg; }
+    public void setWeightKg(Double weightKg) { this.weightKg = weightKg; }
 
-    private Double weightKg;
-    private LocalDate scheduledDate;
+    public LocalDate getScheduledDate() { return scheduledDate; }
+    public void setScheduledDate(LocalDate scheduledDate) { this.scheduledDate = scheduledDate; }
+
+    public Vehicle getVehicle() { return vehicle; }
+    public void setVehicle(Vehicle vehicle) { this.vehicle = vehicle; }
 }
