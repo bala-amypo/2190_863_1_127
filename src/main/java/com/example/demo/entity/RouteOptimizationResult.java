@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class RouteOptimizationResult{
+public class RouteOptimizationResult {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,9 +14,52 @@ public class RouteOptimizationResult{
     private Shipment shipment;
 
     private Double optimizedDistanceKm;
+
     private Double estimatedFuelUsageL;
 
-    private LocalDateTime generatedAt = LocalDateTime.now();.
+    private LocalDateTime generatedAt;
 
-    
+    public RouteOptimizationResult() {
+        this.generatedAt = LocalDateTime.now();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Shipment getShipment() {
+        return shipment;
+    }
+
+    public void setShipment(Shipment shipment) {
+        this.shipment = shipment;
+    }
+
+    public Double getOptimizedDistanceKm() {
+        return optimizedDistanceKm;
+    }
+
+    public void setOptimizedDistanceKm(Double optimizedDistanceKm) {
+        this.optimizedDistanceKm = optimizedDistanceKm;
+    }
+
+    public Double getEstimatedFuelUsageL() {
+        return estimatedFuelUsageL;
+    }
+
+    public void setEstimatedFuelUsageL(Double estimatedFuelUsageL) {
+        this.estimatedFuelUsageL = estimatedFuelUsageL;
+    }
+
+    public LocalDateTime getGeneratedAt() {
+        return generatedAt;
+    }
+
+    public void setGeneratedAt(LocalDateTime generatedAt) {
+        this.generatedAt = generatedAt;
+    }
 }
