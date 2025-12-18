@@ -7,5 +7,13 @@ import jakarta.persistance.*;
 public class User{
 
     @Id
-    @GeneratedValue(strategy)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
+
+    private String name;
+
+    @Column(unique = true) private String email;
+
+    private Sting password;
+
+    private String role;
 }
