@@ -22,7 +22,7 @@ public class PriorityRuleServiceImpl implements PriorityRuleService {
         for (PriorityRule rule : rules) {
             score += rule.getWeight();
         }
-        // Include severity and urgency influence (example: HIGH=3, MEDIUM=2, LOW=1)
+        // Add influence of severity and urgency
         score += complaint.getSeverity().ordinal() + complaint.getUrgency().ordinal();
         return Math.max(score, 0);
     }

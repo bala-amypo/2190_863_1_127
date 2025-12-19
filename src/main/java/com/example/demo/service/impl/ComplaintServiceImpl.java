@@ -31,6 +31,7 @@ public class ComplaintServiceImpl implements ComplaintService {
                 .urgency(request.getUrgency())
                 .customer(customer)
                 .build();
+
         complaint.setPriorityScore(priorityRuleService.computePriorityScore(complaint));
         return complaintRepository.save(complaint);
     }
