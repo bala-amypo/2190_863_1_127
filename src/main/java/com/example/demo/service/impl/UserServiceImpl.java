@@ -1,36 +1,38 @@
-package com.example.demo.entity;
+package com.example.demo.service.impl;
 
-import jakarta.persistence.*;
+import com.example.demo.entity.User;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
-@Entity
-@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
-public class User {
+@Service
+public class UserServiceImpl implements UserService {
 
-    public enum Role { CUSTOMER, AGENT, ADMIN }
+    private final UserRepository repo;
+    private final PasswordEncoder encoder;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public UserServiceImpl(UserRepository repo, PasswordEncoder encoder) {
+        this.repo = repo;
+        this.encoder = encoder;
+    }
 
-    private String fullName;
-    private String email;
-    private String password;
+    public User registerCustomer(String name, String email, String password) {
+        if (repo.findByEmail(email).isPresent())
+            throw new BadRequestException("email already exists");
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+        User u = new User();
+        u.setFullName(name);
+        u.setEmail(email);
+        u.setPassword(encoder.encode(password));
+        u.setRole(User.Role.CUSTOMER);
+        return repo.save(u);
+    }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-
-    public Role getRole() { return role; }
-    public void setRole(Role role) { this.role = role; }
+    public User findByEmail(String email) {
+        return repo.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
 }

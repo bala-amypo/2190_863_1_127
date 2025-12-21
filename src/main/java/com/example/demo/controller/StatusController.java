@@ -1,40 +1,27 @@
+// StatusController.java
 package com.example.demo.controller;
 
 import com.example.demo.entity.Complaint;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.ComplaintRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/status")
-@RequiredArgsConstructor
 public class StatusController {
 
     private final ComplaintRepository complaintRepository;
 
-    // Get the current status of a complaint by ID
-    @GetMapping("/{complaintId}")
-    public ResponseEntity<String> getStatus(@PathVariable Long complaintId) {
-        Optional<Complaint> complaintOpt = complaintRepository.findById(complaintId);
-        if (complaintOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(complaintOpt.get().getStatus().name());
+    public StatusController(ComplaintRepository complaintRepository) {
+        this.complaintRepository = complaintRepository;
     }
 
-    // Update the status of a complaint by ID
-    @PutMapping("/{complaintId}")
-    public ResponseEntity<String> updateStatus(@PathVariable Long complaintId, @RequestParam Complaint.Status status) {
-        Optional<Complaint> complaintOpt = complaintRepository.findById(complaintId);
-        if (complaintOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        Complaint complaint = complaintOpt.get();
+    @PutMapping("/{id}")
+    public Complaint updateStatus(@PathVariable Long id,
+                                  @RequestParam Complaint.Status status) {
+        Complaint complaint = complaintRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
         complaint.setStatus(status);
-        complaintRepository.save(complaint);
-        return ResponseEntity.ok("Status updated to " + status.name());
+        return complaintRepository.save(complaint);
     }
 }

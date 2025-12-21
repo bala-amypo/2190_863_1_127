@@ -1,22 +1,29 @@
+// PriorityRuleController.java
 package com.example.demo.controller;
 
 import com.example.demo.entity.PriorityRule;
-import com.example.demo.service.PriorityRuleService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import com.example.demo.repository.PriorityRuleRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/rules")
-@RequiredArgsConstructor
 public class PriorityRuleController {
 
-    private final PriorityRuleService priorityRuleService;
+    private final PriorityRuleRepository repository;
 
-    @GetMapping("/all")
-    public ResponseEntity<List<PriorityRule>> getAllRules() {
-        return ResponseEntity.ok(priorityRuleService.getActiveRules());
+    public PriorityRuleController(PriorityRuleRepository repository) {
+        this.repository = repository;
+    }
+
+    @GetMapping
+    public List<PriorityRule> getAllRules() {
+        return repository.findAll();
+    }
+
+    @PostMapping
+    public PriorityRule createRule(@RequestBody PriorityRule rule) {
+        return repository.save(rule);
     }
 }
