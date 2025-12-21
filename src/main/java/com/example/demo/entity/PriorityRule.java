@@ -1,15 +1,8 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.Set;
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class PriorityRule {
 
     @Id
@@ -19,10 +12,20 @@ public class PriorityRule {
     private String ruleName;
     private String description;
     private Integer weight;
+    private boolean active = true;
 
-    @Builder.Default
-    private Boolean active = true;
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    @ManyToMany(mappedBy = "priorityRules")
-    private Set<Complaint> complaints;
+    public String getRuleName() { return ruleName; }
+    public void setRuleName(String ruleName) { this.ruleName = ruleName; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public Integer getWeight() { return weight; }
+    public void setWeight(Integer weight) { this.weight = weight; }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
 }

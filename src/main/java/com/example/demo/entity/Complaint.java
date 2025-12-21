@@ -2,7 +2,6 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 public class Complaint {
@@ -34,12 +33,6 @@ public class Complaint {
 
     @ManyToOne
     private User customer;
-
-    @ManyToOne
-    private User assignedAgent;
-
-    @ManyToMany
-    private List<PriorityRule> priorityRules;
 
     @PrePersist
     public void onCreate() {
@@ -79,12 +72,4 @@ public class Complaint {
 
     public User getCustomer() { return customer; }
     public void setCustomer(User customer) { this.customer = customer; }
-
-    public User getAssignedAgent() { return assignedAgent; }
-    public void setAssignedAgent(User assignedAgent) { this.assignedAgent = assignedAgent; }
-
-    public List<PriorityRule> getPriorityRules() { return priorityRules; }
-    public void setPriorityRules(List<PriorityRule> priorityRules) {
-        this.priorityRules = priorityRules;
-    }
 }
