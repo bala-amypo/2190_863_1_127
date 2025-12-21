@@ -1,39 +1,36 @@
-package com.example.demo.service.impl;
+package com.example.demo.entity;
 
-import com.example.demo.entity.User;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.security.JwtUtil;
-import com.example.demo.service.UserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import jakarta.persistence.*;
 
-@Service
-@RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+@Entity
+@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+public class User {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
+    public enum Role { CUSTOMER, AGENT, ADMIN }
 
-    @Override
-    public User registerCustomer(String name, String email, String rawPassword) {
-        userRepository.findByEmail(email).ifPresent(u -> {
-            throw new BadRequestException("Email already exists: " + email);
-        });
-        User user = User.builder()
-                .fullName(name)
-                .email(email)
-                .password(passwordEncoder.encode(rawPassword))
-                .role(User.Role.CUSTOMER)
-                .build();
-        return userRepository.save(user);
-    }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Override
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new BadRequestException("User not found: " + email));
-    }
+    private String fullName;
+    private String email;
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
 }
