@@ -1,9 +1,9 @@
-// AuthController.java
 package com.example.demo.controller;
 
 import com.example.demo.entity.User;
 import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -11,25 +11,24 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService,
+                          PasswordEncoder passwordEncoder) {
         this.userService = userService;
-    }
-
-    @PostMapping("/register")
-    public User register(@RequestParam String name,
-                         @RequestParam String email,
-                         @RequestParam String password) {
-        return userService.registerCustomer(name, email, password);
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/login")
     public String login(@RequestParam String email,
                         @RequestParam String password) {
+
         User user = userService.findByEmail(email);
-        if (user == null) {
-            throw new UnauthorizedException("Invalid credentials");
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new UnauthorizedException("Bad credentials");
         }
+
         return "Login successful for " + email;
     }
 }
