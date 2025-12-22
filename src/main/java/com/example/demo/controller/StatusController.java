@@ -1,10 +1,12 @@
-// StatusController.java
 package com.example.demo.controller;
 
 import com.example.demo.entity.Complaint;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.ComplaintRepository;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/status")
@@ -16,12 +18,17 @@ public class StatusController {
         this.complaintRepository = complaintRepository;
     }
 
-    @PutMapping("/{id}")
-    public Complaint updateStatus(@PathVariable Long id,
-                                  @RequestParam Complaint.Status status) {
+   
+    @GetMapping("/{id}")
+    public Map<String, Object> getStatus(@PathVariable Long id) {
+
         Complaint complaint = complaintRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
-        complaint.setStatus(status);
-        return complaintRepository.save(complaint);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("complaintId", complaint.getId());
+        response.put("status", complaint.getStatus().name());
+
+        return response;
     }
 }
