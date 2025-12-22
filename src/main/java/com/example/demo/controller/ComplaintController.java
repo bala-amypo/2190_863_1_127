@@ -36,4 +36,13 @@ public class ComplaintController {
     public List<Complaint> prioritized() {
         return service.getPrioritizedComplaints();
     }
+
+    @PutMapping("/{id}/status")
+    public Complaint updateComplaintStatus(@PathVariable Long id,@RequestParam Complaint.Status status) {
+
+    Complaint complaint = service.getComplaintById(id);
+    complaint.setStatus(status);
+    return service.updateComplaint(complaint);
+}
+
 }
