@@ -1,11 +1,12 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.Complaint;
-import com.example.demo.entity.User;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.ComplaintRepository;
 import com.example.demo.service.ComplaintService;
 import com.example.demo.service.PriorityRuleService;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -20,16 +21,40 @@ public class ComplaintServiceImpl implements ComplaintService {
         this.ruleService = ruleService;
     }
 
-    public Complaint submitComplaint(Complaint c) {
-        c.setPriorityScore(ruleService.computePriorityScore(c));
-        return repo.save(c);
+    @Override
+    public Complaint submitComplaint(Complaint complaint) {
+        complaint.setPriorityScore(ruleService.computePriorityScore(complaint));
+        return repo.save(complaint);
     }
 
-    public List<Complaint> getComplaintsForUser(User user) {
-        return repo.findByCustomer(user);
+    @Override
+    public List<Complaint> getAllComplaints() {
+        return repo.findAll();
     }
 
+    @Override
     public List<Complaint> getPrioritizedComplaints() {
         return repo.findAllOrderByPriorityScoreDescCreatedAtAsc();
+    }
+
+    @Override
+    public Complaint getComplaintById(Long id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
+    }
+
+    @Override
+    public Complaint updateComplaint(Complaint complaint) {
+
+        Complaint existing = repo.findById(complaint.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
+
+        existing.setDescription(complaint.getDescription());
+        existing.setStatus(complaint.getStatus());
+        existing.setPriorityScore(
+                ruleService.computePriorityScore(existing)
+        );
+
+        return repo.save(existing);
     }
 }
