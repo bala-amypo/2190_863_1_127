@@ -22,8 +22,5 @@ public class PriorityRuleController {
         return repository.findAll();
     }
 
-    @PostMapping
-    public PriorityRule createRule(@RequestBody PriorityRule rule) {
-        return repository.save(rule);
-    }
+    
 }
