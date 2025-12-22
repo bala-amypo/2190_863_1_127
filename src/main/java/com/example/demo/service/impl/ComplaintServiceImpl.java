@@ -23,7 +23,14 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Override
     public Complaint submitComplaint(Complaint complaint) {
-        complaint.setPriorityScore(ruleService.computePriorityScore(complaint));
+
+        if (complaint.getSeverity() == null || complaint.getUrgency() == null) {
+            throw new IllegalArgumentException("Severity and Urgency must be provided");
+        }
+
+        int score = ruleService.computePriorityScore(complaint);
+        complaint.setPriorityScore(score);
+
         return repo.save(complaint);
     }
 
@@ -40,20 +47,30 @@ public class ComplaintServiceImpl implements ComplaintService {
     @Override
     public Complaint getComplaintById(Long id) {
         return repo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Complaint not found with id: " + id));
     }
 
     @Override
     public Complaint updateComplaint(Complaint complaint) {
 
         Complaint existing = repo.findById(complaint.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Complaint not found with id: " + complaint.getId()));
 
-        existing.setDescription(complaint.getDescription());
-        existing.setStatus(complaint.getStatus());
-        existing.setPriorityScore(
-                ruleService.computePriorityScore(existing)
-        );
+        if (complaint.getDescription() != null) {
+            existing.setDescription(complaint.getDescription());
+        }
+
+        if (complaint.getStatus() != null) {
+            existing.setStatus(complaint.getStatus());
+        }
+
+        if (existing.getSeverity() != null && existing.getUrgency() != null) {
+            existing.setPriorityScore(
+                    ruleService.computePriorityScore(existing)
+            );
+        }
 
         return repo.save(existing);
     }
