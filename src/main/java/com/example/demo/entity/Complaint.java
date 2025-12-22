@@ -31,8 +31,10 @@ public class Complaint {
     @Enumerated(EnumType.STRING)
     private Urgency urgency;
 
-    @ManyToOne
-    private User customer;
+   @ManyToOne(optional = true)
+   @JoinColumn(name = "customer_id", nullable = true)
+   private User customer;
+
 
     @PrePersist
     public void onCreate() {
