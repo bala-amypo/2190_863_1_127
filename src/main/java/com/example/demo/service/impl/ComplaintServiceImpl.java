@@ -1,77 +1,68 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.dto.ComplaintRequest;
 import com.example.demo.entity.Complaint;
+import com.example.demo.entity.User;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.ComplaintRepository;
 import com.example.demo.service.ComplaintService;
 import com.example.demo.service.PriorityRuleService;
+import com.example.demo.service.UserService;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class ComplaintServiceImpl implements ComplaintService {
-
-    private final ComplaintRepository repo;
-    private final PriorityRuleService ruleService;
-
-    public ComplaintServiceImpl(ComplaintRepository repo,
-                                PriorityRuleService ruleService) {
-        this.repo = repo;
-        this.ruleService = ruleService;
+    
+    private final ComplaintRepository complaintRepository;
+    private final PriorityRuleService priorityRuleService;
+    private final UserService userService;
+    
+    public ComplaintServiceImpl(ComplaintRepository complaintRepository, 
+                               PriorityRuleService priorityRuleService,
+                               UserService userService) {
+        this.complaintRepository = complaintRepository;
+        this.priorityRuleService = priorityRuleService;
+        this.userService = userService;
     }
-
+    
     @Override
-    public Complaint submitComplaint(Complaint complaint) {
-
-        if (complaint.getSeverity() == null || complaint.getUrgency() == null) {
-            throw new IllegalArgumentException("Severity and Urgency must be provided");
-        }
-
-        int score = ruleService.computePriorityScore(complaint);
+    public Complaint submitComplaint(ComplaintRequest request, User customer) {
+        Complaint complaint = new Complaint();
+        complaint.setTitle(request.getTitle());
+        complaint.setDescription(request.getDescription());
+        complaint.setCategory(request.getCategory());
+        complaint.setChannel(request.getChannel());
+        complaint.setSeverity(request.getSeverity());
+        complaint.setUrgency(request.getUrgency());
+        complaint.setCustomer(customer);
+        complaint.setStatus(Complaint.Status.NEW);
+        
+        // Compute priority score
+        int score = priorityRuleService.computePriorityScore(complaint);
         complaint.setPriorityScore(score);
-
-        return repo.save(complaint);
+        
+        return complaintRepository.save(complaint);
     }
-
+    
     @Override
-    public List<Complaint> getAllComplaints() {
-        return repo.findAll();
+    public List<Complaint> getComplaintsForUser(User customer) {
+        return complaintRepository.findByCustomer(customer);
     }
-
+    
     @Override
     public List<Complaint> getPrioritizedComplaints() {
-        return repo.findAllOrderByPriorityScoreDescCreatedAtAsc();
+        return complaintRepository.findAllOrderByPriorityScoreDescCreatedAtAsc();
     }
-
+    
     @Override
-    public Complaint getComplaintById(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Complaint not found with id: " + id));
-    }
-
-    @Override
-    public Complaint updateComplaint(Complaint complaint) {
-
-        Complaint existing = repo.findById(complaint.getId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Complaint not found with id: " + complaint.getId()));
-
-        if (complaint.getDescription() != null) {
-            existing.setDescription(complaint.getDescription());
-        }
-
-        if (complaint.getStatus() != null) {
-            existing.setStatus(complaint.getStatus());
-        }
-
-        if (existing.getSeverity() != null && existing.getUrgency() != null) {
-            existing.setPriorityScore(
-                    ruleService.computePriorityScore(existing)
-            );
-        }
-
-        return repo.save(existing);
+    public Complaint updateComplaintStatus(Long complaintId, Complaint.Status status) {
+        Complaint complaint = complaintRepository.findById(complaintId)
+                .orElseThrow(() -> new ResourceNotFoundException("Complaint not found with id: " + complaintId));
+        
+        complaint.setStatus(status);
+        return complaintRepository.save(complaint);
     }
 }
