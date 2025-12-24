@@ -4,7 +4,6 @@ import com.example.demo.entity.Complaint;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.ComplaintRepository;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +17,6 @@ public class StatusController {
         this.complaintRepository = complaintRepository;
     }
 
-   
     @GetMapping("/{id}")
     public Map<String, Object> getStatus(@PathVariable Long id) {
 
