@@ -6,7 +6,6 @@ import com.example.demo.entity.User;
 import com.example.demo.repository.ComplaintRepository;
 import com.example.demo.service.ComplaintService;
 import com.example.demo.service.PriorityRuleService;
-import com.example.demo.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,15 +14,11 @@ import java.util.List;
 @Service
 public class ComplaintServiceImpl implements ComplaintService {
     private final ComplaintRepository complaintRepository;
-    private final UserService userService;
     private final PriorityRuleService priorityRuleService;
     
     public ComplaintServiceImpl(ComplaintRepository complaintRepository, 
-                               UserService userService, 
-                               Object unused,
                                PriorityRuleService priorityRuleService) {
         this.complaintRepository = complaintRepository;
-        this.userService = userService;
         this.priorityRuleService = priorityRuleService;
     }
     
