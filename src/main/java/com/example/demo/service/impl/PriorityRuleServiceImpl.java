@@ -4,50 +4,37 @@ import com.example.demo.entity.Complaint;
 import com.example.demo.entity.PriorityRule;
 import com.example.demo.repository.PriorityRuleRepository;
 import com.example.demo.service.PriorityRuleService;
-import org.springframework.stereotype.Service;
+
 import java.util.List;
 
-@Service
 public class PriorityRuleServiceImpl implements PriorityRuleService {
-    private final PriorityRuleRepository priorityRuleRepository;
-    
-    public PriorityRuleServiceImpl(PriorityRuleRepository priorityRuleRepository) {
-        this.priorityRuleRepository = priorityRuleRepository;
+
+    private final PriorityRuleRepository repo;
+
+    public PriorityRuleServiceImpl(PriorityRuleRepository repo) {
+        this.repo = repo;
     }
-    
+
     @Override
     public int computePriorityScore(Complaint complaint) {
-        List<PriorityRule> activeRules = getActiveRules();
         int score = 0;
-        
-        for (PriorityRule rule : activeRules) {
+
+        if (complaint.getSeverity() != null)
+            score += complaint.getSeverity().ordinal() + 1;
+
+        if (complaint.getUrgency() != null)
+            score += complaint.getUrgency().ordinal() + 1;
+
+        List<PriorityRule> rules = repo.findByActiveTrue();
+        for (PriorityRule rule : rules) {
             score += rule.getWeight();
+            complaint.getPriorityRules().add(rule);
         }
-        
-        // Add base score based on severity and urgency
-        if (complaint.getSeverity() != null) {
-            switch (complaint.getSeverity()) {
-                case CRITICAL: score += 4; break;
-                case HIGH: score += 3; break;
-                case MEDIUM: score += 2; break;
-                case LOW: score += 1; break;
-            }
-        }
-        
-        if (complaint.getUrgency() != null) {
-            switch (complaint.getUrgency()) {
-                case IMMEDIATE: score += 4; break;
-                case HIGH: score += 3; break;
-                case MEDIUM: score += 2; break;
-                case LOW: score += 1; break;
-            }
-        }
-        
-        return Math.max(0, score);
+        return score;
     }
-    
+
     @Override
     public List<PriorityRule> getActiveRules() {
-        return priorityRuleRepository.findByActiveTrue();
+        return repo.findByActiveTrue();
     }
 }
