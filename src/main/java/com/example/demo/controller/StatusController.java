@@ -1,16 +1,24 @@
 package com.example.demo.controller;
 
-import org.springframework.http.ResponseEntity;
+import com.example.demo.entity.Complaint;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/status")
+@RequestMapping("/api/status")
 public class StatusController {
     
-    @GetMapping("/history/{complaintId}")
-    public ResponseEntity<List<String>> getStatusHistory(@PathVariable Long complaintId) {
-        return ResponseEntity.ok(List.of("NEW", "OPEN", "IN_PROGRESS"));
+    @GetMapping("/complaint-statuses")
+    public Complaint.Status[] getComplaintStatuses() {
+        return Complaint.Status.values();
+    }
+    
+    @GetMapping("/severities")
+    public Complaint.Severity[] getSeverities() {
+        return Complaint.Severity.values();
+    }
+    
+    @GetMapping("/urgencies")
+    public Complaint.Urgency[] getUrgencies() {
+        return Complaint.Urgency.values();
     }
 }
