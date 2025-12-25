@@ -5,27 +5,22 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 public class SimpleEchoServlet extends HttpServlet {
     
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) 
             throws ServletException, IOException {
         
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("text/plain");
+        resp.setContentType("text/plain");
+        resp.setStatus(HttpServletResponse.SC_OK);
         
-        String name = request.getParameter("name");
-        
-        PrintWriter out = response.getWriter();
+        String name = req.getParameter("name");
         
         if (name == null || name.trim().isEmpty()) {
-            out.print("Hello, Guest");
+            resp.getWriter().write("Hello, Guest");
         } else {
-            out.print("Hello, " + name.trim());
+            resp.getWriter().write("Hello, " + name.trim());
         }
-        
-        out.flush();
     }
 }

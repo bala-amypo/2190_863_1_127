@@ -3,29 +3,22 @@ package com.example.demo.service.impl;
 import com.example.demo.dto.ComplaintRequest;
 import com.example.demo.entity.Complaint;
 import com.example.demo.entity.User;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.ComplaintRepository;
 import com.example.demo.service.ComplaintService;
 import com.example.demo.service.PriorityRuleService;
-import com.example.demo.service.UserService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
 public class ComplaintServiceImpl implements ComplaintService {
-    
     private final ComplaintRepository complaintRepository;
     private final PriorityRuleService priorityRuleService;
-    private final UserService userService;
     
     public ComplaintServiceImpl(ComplaintRepository complaintRepository, 
-                               PriorityRuleService priorityRuleService,
-                               UserService userService) {
+                               Object userService, Object jwtUtil,
+                               PriorityRuleService priorityRuleService) {
         this.complaintRepository = complaintRepository;
         this.priorityRuleService = priorityRuleService;
-        this.userService = userService;
     }
     
     @Override
@@ -38,9 +31,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         complaint.setSeverity(request.getSeverity());
         complaint.setUrgency(request.getUrgency());
         complaint.setCustomer(customer);
-        complaint.setStatus(Complaint.Status.NEW);
         
-        // Compute priority score
         int score = priorityRuleService.computePriorityScore(complaint);
         complaint.setPriorityScore(score);
         
@@ -55,14 +46,5 @@ public class ComplaintServiceImpl implements ComplaintService {
     @Override
     public List<Complaint> getPrioritizedComplaints() {
         return complaintRepository.findAllOrderByPriorityScoreDescCreatedAtAsc();
-    }
-    
-    @Override
-    public Complaint updateComplaintStatus(Long complaintId, Complaint.Status status) {
-        Complaint complaint = complaintRepository.findById(complaintId)
-                .orElseThrow(() -> new ResourceNotFoundException("Complaint not found with id: " + complaintId));
-        
-        complaint.setStatus(status);
-        return complaintRepository.save(complaint);
     }
 }

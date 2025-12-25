@@ -9,5 +9,4 @@ public interface ComplaintService {
     Complaint submitComplaint(ComplaintRequest request, User customer);
     List<Complaint> getComplaintsForUser(User customer);
     List<Complaint> getPrioritizedComplaints();
-    Complaint updateComplaintStatus(Long complaintId, Complaint.Status status);
 }
