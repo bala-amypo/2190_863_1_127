@@ -9,21 +9,8 @@ public class ComplaintRequest {
     private String channel;
     private Complaint.Severity severity;
     private Complaint.Urgency urgency;
-    private Long userId;
     
-    public ComplaintRequest() {}
-    
-    public ComplaintRequest(String title, String description, String category, 
-                           String channel, Complaint.Severity severity, 
-                           Complaint.Urgency urgency) {
-        this.title = title;
-        this.description = description;
-        this.category = category;
-        this.channel = channel;
-        this.severity = severity;
-        this.urgency = urgency;
-    }
-    
+    // Getters and setters
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
     
@@ -41,7 +28,4 @@ public class ComplaintRequest {
     
     public Complaint.Urgency getUrgency() { return urgency; }
     public void setUrgency(Complaint.Urgency urgency) { this.urgency = urgency; }
-    
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
 }
