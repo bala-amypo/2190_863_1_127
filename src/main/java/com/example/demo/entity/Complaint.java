@@ -1,9 +1,12 @@
 package com.example.demo.entity;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+@Entity
+@Table(name = "complaints")
 public class Complaint {
     public enum Status {
         NEW, OPEN, IN_PROGRESS, RESOLVED
@@ -17,19 +20,48 @@ public class Complaint {
         LOW, MEDIUM, HIGH, IMMEDIATE
     }
     
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     private String title;
     private String description;
     private String category;
     private String channel;
     private Integer priorityScore;
+    
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+    
+    @Enumerated(EnumType.STRING)
     private Status status = Status.NEW;
+    
+    @Enumerated(EnumType.STRING)
     private Severity severity;
+    
+    @Enumerated(EnumType.STRING)
     private Urgency urgency;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
     private User customer;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_agent_id")
     private User assignedAgent;
+    
+    @ManyToMany
+    @JoinTable(
+        name = "complaint_priority_rules",
+        joinColumns = @JoinColumn(name = "complaint_id"),
+        inverseJoinColumns = @JoinColumn(name = "priority_rule_id")
+    )
     private Set<PriorityRule> priorityRules = new HashSet<>();
+    
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
     
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

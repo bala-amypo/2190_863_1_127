@@ -1,14 +1,24 @@
 package com.example.demo.entity;
 
+import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@Entity
+@Table(name = "priority_rules")
 public class PriorityRule {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @Column(name = "rule_name")
     private String ruleName;
+    
     private String description;
     private Integer weight;
     private boolean active = true;
+    
+    @ManyToMany(mappedBy = "priorityRules")
     private Set<Complaint> complaints = new HashSet<>();
     
     public Long getId() { return id; }

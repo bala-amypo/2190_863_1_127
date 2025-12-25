@@ -1,14 +1,29 @@
 package com.example.demo.entity;
 
+import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "users")
 public class User {
     public enum Role {
         CUSTOMER, AGENT, ADMIN
     }
     
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @Column(name = "full_name")
     private String fullName;
+    
+    @Column(unique = true)
     private String email;
+    
     private String password;
+    
+    @Enumerated(EnumType.STRING)
     private Role role;
     
     public Long getId() { return id; }
