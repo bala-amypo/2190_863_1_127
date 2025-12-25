@@ -47,52 +47,30 @@ public class Complaint {
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
     }
-    public Severity getSeverity() {
-    return severity;
-}
 
-public Urgency getUrgency() {
-    return urgency;
-}
+    // Getters
+    public String getTitle() { return title; }
+    public String getDescription() { return description; }
+    public String getCategory() { return category; }
+    public String getChannel() { return channel; }
+    public Severity getSeverity() { return severity; }
+    public Urgency getUrgency() { return urgency; }
+    public Status getStatus() { return status; }
+    public Integer getPriorityScore() { return priorityScore; }
+    public User getCustomer() { return customer; }
+    public User getAssignedAgent() { return assignedAgent; }
+    public Set<PriorityRule> getPriorityRules() { return priorityRules; }
 
-public void setCustomer(User customer) {
-    this.customer = customer;
-}
-
-public void setPriorityScore(int priorityScore) {
-    this.priorityScore = priorityScore;
-}
-
-public java.util.Set<PriorityRule> getPriorityRules() {
-    return priorityRules;
-}
-
-public String getTitle() {
-    return title;
-}
-
-public String getDescription() {
-    return description;
-}
-
-public String getCategory() {
-    return category;
-}
-
-public String getChannel() {
-    return channel;
-}
-
-public Severity getSeverity() {
-    return severity;
-}
-
-public Urgency getUrgency() {
-    return urgency;
-}
-
-
-    // getters & setters
-    // (all standard – no logic)
-    // generate via IDE
+    // Setters
+    public void setTitle(String title) { this.title = title; }
+    public void setDescription(String description) { this.description = description; }
+    public void setCategory(String category) { this.category = category; }
+    public void setChannel(String channel) { this.channel = channel; }
+    public void setSeverity(Severity severity) { this.severity = severity; }
+    public void setUrgency(Urgency urgency) { this.urgency = urgency; }
+    public void setStatus(Status status) { this.status = status; }
+    public void setPriorityScore(int priorityScore) { this.priorityScore = priorityScore; }
+    public void setCustomer(User customer) { this.customer = customer; }
+    public void setAssignedAgent(User assignedAgent) { this.assignedAgent = assignedAgent; }
+    public void setPriorityRules(Set<PriorityRule> priorityRules) { this.priorityRules = priorityRules; }
 }
