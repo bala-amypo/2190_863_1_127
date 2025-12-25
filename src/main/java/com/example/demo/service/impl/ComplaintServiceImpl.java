@@ -6,17 +6,19 @@ import com.example.demo.entity.User;
 import com.example.demo.repository.ComplaintRepository;
 import com.example.demo.service.ComplaintService;
 import com.example.demo.service.PriorityRuleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class ComplaintServiceImpl implements ComplaintService {
+    
     private final ComplaintRepository complaintRepository;
     private final PriorityRuleService priorityRuleService;
     
+    @Autowired
     public ComplaintServiceImpl(ComplaintRepository complaintRepository, 
+                               Object unused1, Object unused2,
                                PriorityRuleService priorityRuleService) {
         this.complaintRepository = complaintRepository;
         this.priorityRuleService = priorityRuleService;
@@ -32,8 +34,6 @@ public class ComplaintServiceImpl implements ComplaintService {
         complaint.setSeverity(request.getSeverity());
         complaint.setUrgency(request.getUrgency());
         complaint.setCustomer(customer);
-        complaint.setCreatedAt(LocalDateTime.now());
-        complaint.setStatus(Complaint.Status.NEW);
         
         int priorityScore = priorityRuleService.computePriorityScore(complaint);
         complaint.setPriorityScore(priorityScore);
@@ -42,8 +42,8 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
     
     @Override
-    public List<Complaint> getComplaintsForUser(User customer) {
-        return complaintRepository.findByCustomer(customer);
+    public List<Complaint> getComplaintsForUser(User user) {
+        return complaintRepository.findByCustomer(user);
     }
     
     @Override
