@@ -18,7 +18,6 @@ public class ComplaintServiceImpl implements ComplaintService {
     
     @Autowired
     public ComplaintServiceImpl(ComplaintRepository complaintRepository, 
-                               Object unused1, Object unused2,
                                PriorityRuleService priorityRuleService) {
         this.complaintRepository = complaintRepository;
         this.priorityRuleService = priorityRuleService;
