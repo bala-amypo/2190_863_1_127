@@ -47,6 +47,50 @@ public class Complaint {
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
     }
+    public Severity getSeverity() {
+    return severity;
+}
+
+public Urgency getUrgency() {
+    return urgency;
+}
+
+public void setCustomer(User customer) {
+    this.customer = customer;
+}
+
+public void setPriorityScore(int priorityScore) {
+    this.priorityScore = priorityScore;
+}
+
+public java.util.Set<PriorityRule> getPriorityRules() {
+    return priorityRules;
+}
+
+public String getTitle() {
+    return title;
+}
+
+public String getDescription() {
+    return description;
+}
+
+public String getCategory() {
+    return category;
+}
+
+public String getChannel() {
+    return channel;
+}
+
+public Severity getSeverity() {
+    return severity;
+}
+
+public Urgency getUrgency() {
+    return urgency;
+}
+
 
     // getters & setters
     // (all standard – no logic)

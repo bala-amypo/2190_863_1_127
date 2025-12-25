@@ -19,5 +19,9 @@ public class PriorityRule {
     @ManyToMany(mappedBy = "priorityRules")
     private Set<Complaint> complaints = new HashSet<>();
 
+public int getWeight() {
+    return weight;
+}
+
     // getters & setters
 }
