@@ -8,33 +8,45 @@ import com.example.demo.service.PriorityRuleService;
 import java.util.List;
 
 public class PriorityRuleServiceImpl implements PriorityRuleService {
-
-    private final PriorityRuleRepository repo;
-
-    public PriorityRuleServiceImpl(PriorityRuleRepository repo) {
-        this.repo = repo;
+    private final PriorityRuleRepository priorityRuleRepository;
+    
+    public PriorityRuleServiceImpl(PriorityRuleRepository priorityRuleRepository) {
+        this.priorityRuleRepository = priorityRuleRepository;
     }
-
+    
     @Override
     public int computePriorityScore(Complaint complaint) {
+        List<PriorityRule> activeRules = priorityRuleRepository.findByActiveTrue();
         int score = 0;
-
-        if (complaint.getSeverity() != null)
-            score += complaint.getSeverity().ordinal() + 1;
-
-        if (complaint.getUrgency() != null)
-            score += complaint.getUrgency().ordinal() + 1;
-
-        List<PriorityRule> rules = repo.findByActiveTrue();
-        for (PriorityRule rule : rules) {
+        
+        for (PriorityRule rule : activeRules) {
             score += rule.getWeight();
-            complaint.getPriorityRules().add(rule);
         }
-        return score;
+        
+        // Add base score based on severity and urgency
+        if (complaint.getSeverity() != null) {
+            switch (complaint.getSeverity()) {
+                case CRITICAL: score += 10; break;
+                case HIGH: score += 7; break;
+                case MEDIUM: score += 4; break;
+                case LOW: score += 1; break;
+            }
+        }
+        
+        if (complaint.getUrgency() != null) {
+            switch (complaint.getUrgency()) {
+                case IMMEDIATE: score += 8; break;
+                case HIGH: score += 5; break;
+                case MEDIUM: score += 3; break;
+                case LOW: score += 1; break;
+            }
+        }
+        
+        return Math.max(0, score);
     }
-
+    
     @Override
     public List<PriorityRule> getActiveRules() {
-        return repo.findByActiveTrue();
+        return priorityRuleRepository.findByActiveTrue();
     }
 }
