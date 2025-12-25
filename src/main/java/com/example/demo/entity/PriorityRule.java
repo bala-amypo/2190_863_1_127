@@ -11,9 +11,7 @@ public class PriorityRule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "rule_name")
     private String ruleName;
-    
     private String description;
     private Integer weight;
     private boolean active = true;
@@ -21,6 +19,7 @@ public class PriorityRule {
     @ManyToMany(mappedBy = "priorityRules")
     private Set<Complaint> complaints = new HashSet<>();
     
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
