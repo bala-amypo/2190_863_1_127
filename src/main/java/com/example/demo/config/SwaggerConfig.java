@@ -15,7 +15,7 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
-                .addServersItem(new Server().url("http://localhost:8080").description("Local server"))
+                .addServersItem(new Server().url("https://9081.32procr.amypo.ai/").description("Local server"))
                 .info(new Info()
                         .title("Digital Complaint Prioritization Engine API")
                         .version("1.0")
