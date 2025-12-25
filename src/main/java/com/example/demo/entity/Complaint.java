@@ -6,61 +6,41 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "complaints")
 public class Complaint {
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(nullable = false)
     private String title;
-    
-    @Column(nullable = false, length = 2000)
     private String description;
-    
-    @Column(nullable = false)
     private String category;
-    
-    @Column(nullable = false)
     private String channel;
+    private Integer priorityScore;
     
-    @Column(nullable = false)
-    private Integer priorityScore = 0;
-    
-    @Column(nullable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
     
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Status status = Status.NEW;
     
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Severity severity;
     
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Urgency urgency;
     
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
     private User customer;
     
     @ManyToOne
-    @JoinColumn(name = "assigned_agent_id")
     private User assignedAgent;
     
     @ManyToMany
-    @JoinTable(
-        name = "complaint_priority_rules",
-        joinColumns = @JoinColumn(name = "complaint_id"),
-        inverseJoinColumns = @JoinColumn(name = "priority_rule_id")
-    )
+    @JoinTable(name = "complaint_priority_rules")
     private Set<PriorityRule> priorityRules = new HashSet<>();
     
     public enum Status {
-        NEW, OPEN, IN_PROGRESS, RESOLVED, CLOSED
+        NEW, OPEN, IN_PROGRESS, RESOLVED
     }
     
     public enum Severity {
@@ -72,13 +52,13 @@ public class Complaint {
     }
     
     @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
+    public void prePersist() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
     }
     
-    public Complaint() {}
-    
-    // Getters and Setters
+    // Getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
@@ -116,7 +96,5 @@ public class Complaint {
     public void setAssignedAgent(User assignedAgent) { this.assignedAgent = assignedAgent; }
     
     public Set<PriorityRule> getPriorityRules() { return priorityRules; }
-    public void setPriorityRules(Set<PriorityRule> priorityRules) { 
-        this.priorityRules = priorityRules; 
-    }
+    public void setPriorityRules(Set<PriorityRule> priorityRules) { this.priorityRules = priorityRules; }
 }
