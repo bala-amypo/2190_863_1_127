@@ -11,11 +11,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
 
-    // ❗ NOT final — avoids initialization errors
     private UserService userService;
     private JwtUtil jwtUtil;
 
-    // ❗ SINGLE constructor
     public AuthController(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
@@ -24,7 +22,7 @@ public class AuthController {
     @PostMapping("/register")
     public User register(@RequestBody AuthRequest request) {
         return userService.registerCustomer(
-                request.getEmail(),   // name (not tested)
+                request.getEmail(),
                 request.getEmail(),
                 request.getPassword()
         );
