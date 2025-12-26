@@ -4,70 +4,33 @@ import com.example.demo.entity.Complaint;
 import com.example.demo.entity.PriorityRule;
 import com.example.demo.repository.PriorityRuleRepository;
 import com.example.demo.service.PriorityRuleService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public class PriorityRuleServiceImpl implements PriorityRuleService {
 
-    private final PriorityRuleRepository priorityRuleRepository;
+    private final PriorityRuleRepository repository;
 
-    @Autowired
-    public PriorityRuleServiceImpl(PriorityRuleRepository priorityRuleRepository) {
-        this.priorityRuleRepository = priorityRuleRepository;
+    public PriorityRuleServiceImpl(PriorityRuleRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public int computePriorityScore(Complaint complaint) {
-        List<PriorityRule> activeRules = priorityRuleRepository.findByActiveTrue();
-        
-        int baseScore = 0;
-        
-        // Calculate base score from severity
-        switch (complaint.getSeverity()) {
-            case LOW:
-                baseScore += 1;
-                break;
-            case MEDIUM:
-                baseScore += 3;
-                break;
-            case HIGH:
-                baseScore += 5;
-                break;
-            case CRITICAL:
-                baseScore += 10;
-                break;
+        int score = 0;
+
+        if (complaint.getSeverity() != null) score += complaint.getSeverity().ordinal();
+        if (complaint.getUrgency() != null) score += complaint.getUrgency().ordinal();
+
+        List<PriorityRule> rules = repository.findByActiveTrue();
+        for (PriorityRule rule : rules) {
+            score += rule.getWeight();
         }
-        
-        // Add urgency score
-        switch (complaint.getUrgency()) {
-            case LOW:
-                baseScore += 1;
-                break;
-            case MEDIUM:
-                baseScore += 3;
-                break;
-            case HIGH:
-                baseScore += 5;
-                break;
-            case IMMEDIATE:
-                baseScore += 10;
-                break;
-        }
-        
-        // Apply rule weights
-        int ruleBonus = 0;
-        for (PriorityRule rule : activeRules) {
-            ruleBonus += rule.getWeight();
-        }
-        
-        return baseScore + ruleBonus;
+        return score;
     }
 
     @Override
     public List<PriorityRule> getActiveRules() {
-        return priorityRuleRepository.findByActiveTrue();
+        return repository.findByActiveTrue();
     }
 }
