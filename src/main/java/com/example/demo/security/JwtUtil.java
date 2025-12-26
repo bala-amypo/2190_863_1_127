@@ -1,5 +1,8 @@
 package com.example.demo.security;
 
+import org.springframework.stereotype.Component;
+
+@Component   // 🔥 THIS IS THE FIX
 public class JwtUtil {
 
     public String extractRole(String token) {
