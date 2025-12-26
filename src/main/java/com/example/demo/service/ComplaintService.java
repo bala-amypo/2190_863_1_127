@@ -1,16 +1,24 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.ComplaintRequest;
 import com.example.demo.entity.Complaint;
 import com.example.demo.entity.User;
+import com.example.demo.dto.ComplaintRequest;
 
 import java.util.List;
 
 public interface ComplaintService {
 
-    Complaint submitComplaint(ComplaintRequest request, User customer);
+    // ===== EXISTING METHODS (kept) =====
+    Complaint submitComplaint(Complaint request);
 
-    List<Complaint> getComplaintsForUser(User customer);
+    List<Complaint> getUserComplaints(Long userId);
 
     List<Complaint> getPrioritizedComplaints();
+
+    void updateComplaintStatus(Long id, String status);
+
+    // ===== TEST-REQUIRED METHODS (added) =====
+    Complaint submitComplaint(ComplaintRequest request, User user);
+
+    List<Complaint> getComplaintsForUser(User user);
 }

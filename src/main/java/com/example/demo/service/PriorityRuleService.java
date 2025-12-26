@@ -1,13 +1,17 @@
 package com.example.demo.service;
 
+import java.util.List;
+
 import com.example.demo.entity.Complaint;
 import com.example.demo.entity.PriorityRule;
 
-import java.util.List;
-
 public interface PriorityRuleService {
 
-    int computePriorityScore(Complaint complaint);
+    // ===== EXISTING METHOD (kept) =====
+    List<PriorityRule> getAllRules();
 
+    // ===== TEST-REQUIRED METHODS (added) =====
     List<PriorityRule> getActiveRules();
+
+    int computePriorityScore(Complaint complaint);
 }
