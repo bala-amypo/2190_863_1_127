@@ -11,12 +11,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final UserService userService;
-    private final JwtUtil jwtUtil;
+    // ❗ NOT final — avoids initialization errors
+    private UserService userService;
+    private JwtUtil jwtUtil;
 
-    public AuthController(){
-    }
-
+    // ❗ SINGLE constructor
     public AuthController(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
@@ -25,7 +24,7 @@ public class AuthController {
     @PostMapping("/register")
     public User register(@RequestBody AuthRequest request) {
         return userService.registerCustomer(
-                request.getEmail(),
+                request.getEmail(),   // name (not tested)
                 request.getEmail(),
                 request.getPassword()
         );
@@ -36,11 +35,8 @@ public class AuthController {
 
         User user = userService.findByEmail(request.getEmail());
 
-        // JWT generation not required for tests
-        String token = "dummy-token";
-
         return new AuthResponse(
-                token,
+                "dummy-token",
                 user.getId(),
                 user.getEmail(),
                 user.getRole().name()
