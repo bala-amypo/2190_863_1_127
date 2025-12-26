@@ -9,31 +9,32 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
-    
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    
+
     @Autowired
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
-    
+
     @Override
     public User registerCustomer(String fullName, String email, String password) {
+        // Check if email already exists
         if (userRepository.findByEmail(email).isPresent()) {
             throw new RuntimeException("Email already exists");
         }
-        
+
         User user = new User();
         user.setFullName(fullName);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
         user.setRole(User.Role.CUSTOMER);
-        
+
         return userRepository.save(user);
     }
-    
+
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
