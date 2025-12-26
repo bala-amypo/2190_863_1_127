@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service   // 🔴 REQUIRED
+@Service
 public class PriorityRuleServiceImpl implements PriorityRuleService {
 
     private final PriorityRuleRepository priorityRuleRepository;
@@ -33,7 +33,6 @@ public class PriorityRuleServiceImpl implements PriorityRuleService {
 
         if (complaint.getUrgency() != null) {
             switch (complaint.getUrgency()) {
-                case IMMEDIATE -> score += 10;
                 case HIGH -> score += 6;
                 case MEDIUM -> score += 3;
                 case LOW -> score += 1;
