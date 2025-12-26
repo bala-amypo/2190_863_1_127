@@ -11,6 +11,10 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
 
     List<Complaint> findByCustomer(User customer);
 
-    @Query("SELECT c FROM Complaint c ORDER BY c.priorityScore DESC, c.createdAt ASC")
+    @Query("""
+        SELECT c
+        FROM Complaint c
+        ORDER BY c.priorityScore DESC, c.createdAt ASC
+    """)
     List<Complaint> findAllOrderByPriorityScoreDescCreatedAtAsc();
 }
