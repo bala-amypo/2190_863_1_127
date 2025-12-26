@@ -4,9 +4,11 @@ import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service   // 🔴 REQUIRED
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -23,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
         Optional<User> existing = userRepository.findByEmail(email);
         if (existing.isPresent()) {
-            throw new RuntimeException("Email already exists");
+            throw new RuntimeException("email already exists");
         }
 
         User user = new User();

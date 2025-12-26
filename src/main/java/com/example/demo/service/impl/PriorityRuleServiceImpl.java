@@ -4,9 +4,11 @@ import com.example.demo.entity.Complaint;
 import com.example.demo.entity.PriorityRule;
 import com.example.demo.repository.PriorityRuleRepository;
 import com.example.demo.service.PriorityRuleService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service   // 🔴 REQUIRED
 public class PriorityRuleServiceImpl implements PriorityRuleService {
 
     private final PriorityRuleRepository priorityRuleRepository;
@@ -20,7 +22,6 @@ public class PriorityRuleServiceImpl implements PriorityRuleService {
 
         int score = 0;
 
-        // Severity weight
         if (complaint.getSeverity() != null) {
             switch (complaint.getSeverity()) {
                 case CRITICAL -> score += 10;
@@ -30,7 +31,6 @@ public class PriorityRuleServiceImpl implements PriorityRuleService {
             }
         }
 
-        // Urgency weight
         if (complaint.getUrgency() != null) {
             switch (complaint.getUrgency()) {
                 case IMMEDIATE -> score += 10;
@@ -49,7 +49,7 @@ public class PriorityRuleServiceImpl implements PriorityRuleService {
             }
         }
 
-        return Math.max(score, 0);
+        return score;
     }
 
     @Override
