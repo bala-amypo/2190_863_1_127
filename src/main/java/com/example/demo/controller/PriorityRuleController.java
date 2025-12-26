@@ -9,6 +9,7 @@ import com.example.demo.service.PriorityRuleService;
 
 @RestController
 @RequestMapping("/rules")
+@CrossOrigin(origins = "*")
 
 public class PriorityRuleController{
     @Autowired

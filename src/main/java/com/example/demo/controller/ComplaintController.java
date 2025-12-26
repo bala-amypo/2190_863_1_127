@@ -8,6 +8,7 @@ import com.example.demo.service.ComplaintService;
 
 @RestController
 @RequestMapping("/complaints")
+@CrossOrigin(origins = "*")
 public class ComplaintController{
 
     @Autowired

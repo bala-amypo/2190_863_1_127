@@ -8,6 +8,7 @@ import com.example.demo.service.ComplaintStatusService;
 
 @RestController
 @RequestMapping("/status")
+@CrossOrigin(origins = "*")
 public class StatusController{
 
     @Autowired

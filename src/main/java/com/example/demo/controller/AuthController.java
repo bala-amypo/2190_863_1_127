@@ -8,6 +8,7 @@ import com.example.demo.service.UserService;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "*")
 public class AuthController{
 
     @Autowired
