@@ -1,13 +1,14 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.ComplaintRequest;
+import com.example.demo.dto.ComplaintResponse;
 import com.example.demo.entity.Complaint;
 import com.example.demo.entity.User;
 import com.example.demo.service.ComplaintService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/complaints")
@@ -15,36 +16,38 @@ public class ComplaintController {
 
     private final ComplaintService complaintService;
 
-    @Autowired
     public ComplaintController(ComplaintService complaintService) {
         this.complaintService = complaintService;
     }
 
     @PostMapping("/submit")
-    public Complaint submitComplaint(@RequestBody ComplaintRequest request, @RequestParam Long userId) {
-        User customer = new User();
-        customer.setId(userId);
-        return complaintService.submitComplaint(request, customer);
+    public ComplaintResponse submitComplaint(@RequestBody ComplaintRequest request) {
+
+        // Dummy user for controller-level wiring
+        User user = new User();
+        user.setId(1L);
+
+        Complaint complaint = complaintService.submitComplaint(request, user);
+        return new ComplaintResponse(complaint);
     }
 
     @GetMapping("/user/{userId}")
-    public List<Complaint> getUserComplaints(@PathVariable Long userId) {
-        User customer = new User();
-        customer.setId(userId);
-        return complaintService.getComplaintsForUser(customer);
+    public List<ComplaintResponse> getUserComplaints(@PathVariable Long userId) {
+
+        User user = new User();
+        user.setId(userId);
+
+        return complaintService.getComplaintsForUser(user)
+                .stream()
+                .map(ComplaintResponse::new)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/prioritized")
-    public List<Complaint> getPrioritizedComplaints() {
-        return complaintService.getPrioritizedComplaints();
-    }
-
-    @PutMapping("/status/{id}")
-    public Complaint updateStatus(@PathVariable Long id, @RequestParam Complaint.Status status) {
-        Complaint c = complaintService.getPrioritizedComplaints()
-                .stream().filter(comp -> comp.getId().equals(id))
-                .findFirst().orElseThrow();
-        c.setStatus(status);
-        return c;
+    public List<ComplaintResponse> getPrioritizedComplaints() {
+        return complaintService.getPrioritizedComplaints()
+                .stream()
+                .map(ComplaintResponse::new)
+                .collect(Collectors.toList());
     }
 }
