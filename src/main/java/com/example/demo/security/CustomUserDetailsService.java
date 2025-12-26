@@ -2,7 +2,6 @@ package com.example.demo.security;
 
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
-
 import java.util.Collections;
 
 public class CustomUserDetailsService {
@@ -17,10 +16,21 @@ public class CustomUserDetailsService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return new UserDetails(
-                user.getEmail(),
-                user.getPassword(),
-                Collections.singletonList("ROLE_" + user.getRole().name())
-        );
+        return new UserDetails() {
+            @Override
+            public String getUsername() {
+                return user.getEmail();
+            }
+
+            @Override
+            public String getPassword() {
+                return user.getPassword();
+            }
+
+            @Override
+            public java.util.Collection<String> getAuthorities() {
+                return Collections.singleton("ROLE_" + user.getRole().name());
+            }
+        };
     }
 }
