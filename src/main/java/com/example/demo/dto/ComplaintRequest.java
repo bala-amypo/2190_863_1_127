@@ -12,6 +12,7 @@ public class ComplaintRequest {
     private Complaint.Urgency urgency;
 
     public ComplaintRequest() {
+        // default constructor
     }
 
     public String getTitle() {
@@ -21,7 +22,7 @@ public class ComplaintRequest {
     public void setTitle(String title) {
         this.title = title;
     }
-
+ 
     public String getDescription() {
         return description;
     }
@@ -29,7 +30,7 @@ public class ComplaintRequest {
     public void setDescription(String description) {
         this.description = description;
     }
-
+ 
     public String getCategory() {
         return category;
     }
@@ -37,7 +38,7 @@ public class ComplaintRequest {
     public void setCategory(String category) {
         this.category = category;
     }
-
+ 
     public String getChannel() {
         return channel;
     }
@@ -45,7 +46,7 @@ public class ComplaintRequest {
     public void setChannel(String channel) {
         this.channel = channel;
     }
-
+ 
     public Complaint.Severity getSeverity() {
         return severity;
     }
@@ -53,7 +54,7 @@ public class ComplaintRequest {
     public void setSeverity(Complaint.Severity severity) {
         this.severity = severity;
     }
-
+ 
     public Complaint.Urgency getUrgency() {
         return urgency;
     }
