@@ -19,10 +19,19 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final ComplaintRepository complaintRepository;
     private final PriorityRuleService priorityRuleService;
 
+    // Constructor for production use
     @Autowired
     public ComplaintServiceImpl(
             ComplaintRepository complaintRepository,
-            Object placeholder1,  // To match test constructor with nulls
+            PriorityRuleService priorityRuleService) {
+        this.complaintRepository = complaintRepository;
+        this.priorityRuleService = priorityRuleService;
+    }
+
+    // Constructor for testing (allows null placeholders)
+    public ComplaintServiceImpl(
+            ComplaintRepository complaintRepository,
+            Object placeholder1,
             Object placeholder2,
             PriorityRuleService priorityRuleService) {
         this.complaintRepository = complaintRepository;
