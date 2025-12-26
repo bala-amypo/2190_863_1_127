@@ -10,7 +10,7 @@ public class ComplaintRequest {
     private Complaint.Severity severity;
     private Complaint.Urgency urgency;
 
-    // getters and setters
+    // getters & setters
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 

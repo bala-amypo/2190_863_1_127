@@ -8,26 +8,27 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service   // 🔥 ADD THIS
+@Service
 public class PriorityRuleServiceImpl implements PriorityRuleService {
 
-    private final PriorityRuleRepository priorityRuleRepository;
+    private final PriorityRuleRepository repo;
 
-    public PriorityRuleServiceImpl(PriorityRuleRepository priorityRuleRepository) {
-        this.priorityRuleRepository = priorityRuleRepository;
+    public PriorityRuleServiceImpl(PriorityRuleRepository repo) {
+        this.repo = repo;
     }
 
-    @Override
     public int computePriorityScore(Complaint complaint) {
         int score = 0;
-        for (PriorityRule rule : priorityRuleRepository.findByActiveTrue()) {
-            score += rule.getWeight();
+        if (complaint.getSeverity() != null) score += complaint.getSeverity().ordinal();
+        if (complaint.getUrgency() != null) score += complaint.getUrgency().ordinal();
+
+        for (PriorityRule r : repo.findByActiveTrue()) {
+            score += r.getWeight();
         }
         return score;
     }
 
-    @Override
     public List<PriorityRule> getActiveRules() {
-        return priorityRuleRepository.findByActiveTrue();
+        return repo.findByActiveTrue();
     }
 }
