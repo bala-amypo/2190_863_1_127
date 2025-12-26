@@ -6,6 +6,7 @@ public class AuthRequest {
     private String password;
 
     public AuthRequest() {
+        // default constructor
     }
 
     public String getEmail() {

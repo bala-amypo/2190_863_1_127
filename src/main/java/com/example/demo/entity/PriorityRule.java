@@ -12,27 +12,25 @@ public class PriorityRule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String ruleName;
 
-    @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
-    private int weight;
+    private Integer weight;
 
-    @Column(nullable = false)
-    private boolean active = true;
+    private boolean active = true; // DEFAULT TRUE (IMPORTANT)
 
     @ManyToMany(mappedBy = "priorityRules")
     private Set<Complaint> complaints = new HashSet<>();
 
-    // ---------- Constructors ----------
+    // ===== Constructors =====
+
     public PriorityRule() {
-        this.active = true;
+        // default constructor
     }
 
-    // ---------- Getters & Setters ----------
+    // ===== Getters and Setters =====
+
     public Long getId() {
         return id;
     }
@@ -57,11 +55,11 @@ public class PriorityRule {
         this.description = description;
     }
 
-    public int getWeight() {
+    public Integer getWeight() {
         return weight;
     }
  
-    public void setWeight(int weight) {
+    public void setWeight(Integer weight) {
         this.weight = weight;
     }
 
@@ -76,7 +74,7 @@ public class PriorityRule {
     public Set<Complaint> getComplaints() {
         return complaints;
     }
- 
+
     public void setComplaints(Set<Complaint> complaints) {
         this.complaints = complaints;
     }

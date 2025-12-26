@@ -9,8 +9,11 @@ import java.util.Set;
 @Table(name = "complaints")
 public class Complaint {
 
+    // ===== ENUMS REQUIRED BY TESTS =====
+
     public enum Status {
         NEW,
+        OPEN,
         IN_PROGRESS,
         RESOLVED,
         CLOSED
@@ -30,30 +33,33 @@ public class Complaint {
         IMMEDIATE
     }
 
+    // ===== FIELDS =====
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
 
+    @Column(length = 2000)
     private String description;
 
     private String category;
 
     private String channel;
 
+    private Integer priorityScore;
+
+    private LocalDateTime createdAt;
+
     @Enumerated(EnumType.STRING)
-    private Status status = Status.NEW;
+    private Status status = Status.NEW; // DEFAULT NEW
 
     @Enumerated(EnumType.STRING)
     private Severity severity;
 
     @Enumerated(EnumType.STRING)
     private Urgency urgency;
-
-    private Integer priorityScore;
-
-    private LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
@@ -65,19 +71,30 @@ public class Complaint {
 
     @ManyToMany
     @JoinTable(
-        name = "complaint_priority_rules",
-        joinColumns = @JoinColumn(name = "complaint_id"),
-        inverseJoinColumns = @JoinColumn(name = "rule_id")
+            name = "complaint_priority_rules",
+            joinColumns = @JoinColumn(name = "complaint_id"),
+            inverseJoinColumns = @JoinColumn(name = "rule_id")
     )
     private Set<PriorityRule> priorityRules = new HashSet<>();
 
-    // ---------- Constructors ----------
-    public Complaint() {
-        this.status = Status.NEW;
-        this.priorityRules = new HashSet<>();
+    // ===== Lifecycle =====
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        if (this.status == null) {
+            this.status = Status.NEW;
+        }
     }
 
-    // ---------- Getters & Setters ----------
+    // ===== Constructors =====
+
+    public Complaint() {
+        // default constructor
+    }
+
+    // ===== Getters and Setters =====
+
     public Long getId() {
         return id;
     }
@@ -118,6 +135,18 @@ public class Complaint {
         this.channel = channel;
     }
 
+    public Integer getPriorityScore() {
+        return priorityScore;
+    }
+ 
+    public void setPriorityScore(Integer priorityScore) {
+        this.priorityScore = priorityScore;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
     public Status getStatus() {
         return status;
     }
@@ -142,18 +171,6 @@ public class Complaint {
         this.urgency = urgency;
     }
 
-    public Integer getPriorityScore() {
-        return priorityScore;
-    }
- 
-    public void setPriorityScore(Integer priorityScore) {
-        this.priorityScore = priorityScore;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
     public User getCustomer() {
         return customer;
     }
@@ -173,7 +190,7 @@ public class Complaint {
     public Set<PriorityRule> getPriorityRules() {
         return priorityRules;
     }
- 
+
     public void setPriorityRules(Set<PriorityRule> priorityRules) {
         this.priorityRules = priorityRules;
     }

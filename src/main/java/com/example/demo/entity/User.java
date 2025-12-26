@@ -3,7 +3,10 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users")
+@Table(
+        name = "users",
+        uniqueConstraints = @UniqueConstraint(columnNames = "email")
+)
 public class User {
 
     public enum Role {
@@ -16,24 +19,24 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String fullName;
 
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Role role;
 
-    // ---------- Constructors ----------
+    // ===== Constructors =====
+
     public User() {
+        // default constructor required by JPA
     }
 
-    // ---------- Getters & Setters ----------
+    // ===== Getters and Setters =====
+
     public Long getId() {
         return id;
     }

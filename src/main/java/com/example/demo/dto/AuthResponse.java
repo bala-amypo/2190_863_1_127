@@ -3,18 +3,19 @@ package com.example.demo.dto;
 public class AuthResponse {
 
     private String token;
-    private String role;
-    private String email;
     private Long userId;
+    private String email;
+    private String role;
 
     public AuthResponse() {
+        // default constructor
     }
 
-    public AuthResponse(String token, String role, String email, Long userId) {
+    public AuthResponse(String token, Long userId, String email, String role) {
         this.token = token;
-        this.role = role;
-        this.email = email;
         this.userId = userId;
+        this.email = email;
+        this.role = role;
     }
 
     public String getToken() {
@@ -24,15 +25,15 @@ public class AuthResponse {
     public void setToken(String token) {
         this.token = token;
     }
-
-    public String getRole() {
-        return role;
+ 
+    public Long getUserId() {
+        return userId;
     }
  
-    public void setRole(String role) {
-        this.role = role;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
-
+ 
     public String getEmail() {
         return email;
     }
@@ -40,12 +41,12 @@ public class AuthResponse {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    public Long getUserId() {
-        return userId;
+ 
+    public String getRole() {
+        return role;
     }
  
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setRole(String role) {
+        this.role = role;
     }
 }
