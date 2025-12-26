@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.ComplaintRequest;
-import com.example.demo.dto.ComplaintResponse;
 import com.example.demo.entity.Complaint;
 import com.example.demo.entity.User;
 import com.example.demo.service.ComplaintService;
@@ -9,10 +8,9 @@ import com.example.demo.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/complaints")
+@RequestMapping("/complaints")
 public class ComplaintController {
 
     private final ComplaintService complaintService;
@@ -24,33 +22,22 @@ public class ComplaintController {
         this.userService = userService;
     }
 
-    @PostMapping
-    public ComplaintResponse submit(@RequestBody ComplaintRequest request) {
+    @PostMapping("/submit")
+    public Complaint submitComplaint(@RequestBody ComplaintRequest request,
+                                     @RequestParam String email) {
 
-        // Dummy user for controller demo (tests use service directly)
-        User user = userService.findByEmail("customer@example.com");
-
-        Complaint c = complaintService.submitComplaint(request, user);
-
-        return new ComplaintResponse(
-                c.getId(),
-                c.getTitle(),
-                c.getStatus(),
-                c.getPriorityScore()
-        );
+        User user = userService.findByEmail(email);
+        return complaintService.submitComplaint(request, user);
     }
 
-    @GetMapping
-    public List<ComplaintResponse> getAll() {
+    @GetMapping("/user/{email}")
+    public List<Complaint> getComplaintsForUser(@PathVariable String email) {
+        User user = userService.findByEmail(email);
+        return complaintService.getComplaintsForUser(user);
+    }
 
-        return complaintService.getPrioritizedComplaints()
-                .stream()
-                .map(c -> new ComplaintResponse(
-                        c.getId(),
-                        c.getTitle(),
-                        c.getStatus(),
-                        c.getPriorityScore()
-                ))
-                .collect(Collectors.toList());
+    @GetMapping("/prioritized")
+    public List<Complaint> getPrioritizedComplaints() {
+        return complaintService.getPrioritizedComplaints();
     }
 }
