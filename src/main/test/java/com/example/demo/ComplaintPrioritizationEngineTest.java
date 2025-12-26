@@ -1,35 +1,69 @@
-@BeforeClass
-public void setUp() {
-    servlet = new SimpleEchoServlet();
+package com.example.demo;
 
-    // Mock repositories
-    userRepository = Mockito.mock(UserRepository.class);
-    complaintRepository = Mockito.mock(ComplaintRepository.class);
-    priorityRuleRepository = Mockito.mock(PriorityRuleRepository.class);
-    passwordEncoder = Mockito.mock(PasswordEncoder.class);
+import com.example.demo.repository.ComplaintRepository;
+import com.example.demo.service.PriorityRuleService;
+import com.example.demo.service.impl.ComplaintServiceImpl;
+import com.example.demo.servlet.SimpleEchoServlet;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-    // Services
-    userService = new UserServiceImpl(userRepository, passwordEncoder);
-    priorityRuleService = new PriorityRuleServiceImpl(priorityRuleRepository);
-    complaintService = new ComplaintServiceImpl(
-            complaintRepository,
-            priorityRuleService // ✅ Only 2 args, matches constructor
-    );
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-    jwtUtil = Mockito.mock(JwtUtil.class);
+import static org.mockito.Mockito.*;
 
-    // Sample data
-    sampleUser = new User();
-    sampleUser.setId(1L);
-    sampleUser.setEmail("customer@example.com");
-    sampleUser.setFullName("Test Customer");
-    sampleUser.setPassword("encoded");
-    sampleUser.setRole(User.Role.CUSTOMER);
+class ComplaintPrioritizationEngineTest {
 
-    highSeverityRule = new PriorityRule();
-    highSeverityRule.setId(1L);
-    highSeverityRule.setRuleName("High Severity Boost");
-    highSeverityRule.setDescription("Boost score for high severity");
-    highSeverityRule.setWeight(5);
-    highSeverityRule.setActive(true);
+    private ComplaintRepository complaintRepository;
+    private PriorityRuleService priorityRuleService;
+    private ComplaintServiceImpl complaintService;
+
+    private HttpServletRequest request;
+    private HttpServletResponse response;
+
+    // Subclass to expose protected doGet for testing
+    private static class TestableEchoServlet extends SimpleEchoServlet {
+        @Override
+        public void doGet(HttpServletRequest req, HttpServletResponse resp) {
+            try {
+                super.doGet(req, resp);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private TestableEchoServlet echoServlet;
+
+    @BeforeEach
+    void setUp() {
+        // Mock dependencies
+        complaintRepository = mock(ComplaintRepository.class);
+        priorityRuleService = mock(PriorityRuleService.class);
+
+        // Correct constructor usage
+        complaintService = new ComplaintServiceImpl(complaintRepository, priorityRuleService);
+
+        request = mock(HttpServletRequest.class);
+        response = mock(HttpServletResponse.class);
+
+        echoServlet = new TestableEchoServlet();
+    }
+
+    @Test
+    void testDoGet() {
+        // You can now safely call doGet
+        echoServlet.doGet(request, response);
+
+        // Verify response or interactions
+        // Example:
+        // verify(response).setStatus(HttpServletResponse.SC_OK);
+    }
+
+    @Test
+    void testComplaintService() {
+        // Example test for service logic
+        // complaintService.someMethod(...);
+        // verify or assert results
+    }
 }
