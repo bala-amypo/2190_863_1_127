@@ -7,7 +7,14 @@ import com.example.demo.entity.User;
 import java.util.List;
 
 public interface ComplaintService {
+
     Complaint submitComplaint(ComplaintRequest request, User customer);
+
     List<Complaint> getComplaintsForUser(User customer);
+
     List<Complaint> getPrioritizedComplaints();
+
+    Complaint updateStatus(Long complaintId, Complaint.Status status);
+
+    List<String> getStatusHistory(Long complaintId);
 }
