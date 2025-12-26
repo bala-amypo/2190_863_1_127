@@ -2,37 +2,43 @@ package com.example.demo.service.impl;
 
 import com.example.demo.dto.ComplaintRequest;
 import com.example.demo.entity.Complaint;
-import com.example.demo.entity.PriorityRule;
 import com.example.demo.entity.User;
 import com.example.demo.repository.ComplaintRepository;
 import com.example.demo.service.ComplaintService;
 import com.example.demo.service.PriorityRuleService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service   // 🔥 ADD THIS
 public class ComplaintServiceImpl implements ComplaintService {
 
     private final ComplaintRepository complaintRepository;
     private final PriorityRuleService priorityRuleService;
 
-    public ComplaintServiceImpl(ComplaintRepository repo, Object obj1, Object obj2, PriorityRuleService priorityRuleService){
-        this.complaintRepository = repo;
+    public ComplaintServiceImpl(ComplaintRepository complaintRepository,
+                                Object o1,
+                                Object o2,
+                                PriorityRuleService priorityRuleService) {
+        this.complaintRepository = complaintRepository;
         this.priorityRuleService = priorityRuleService;
     }
 
     @Override
     public Complaint submitComplaint(ComplaintRequest req, User user) {
-        Complaint c = new Complaint();
-        c.setTitle(req.getTitle());
-        c.setDescription(req.getDescription());
-        c.setCategory(req.getCategory());
-        c.setChannel(req.getChannel());
-        c.setSeverity(req.getSeverity());
-        c.setUrgency(req.getUrgency());
-        c.setCustomer(user);
-        int score = priorityRuleService.computePriorityScore(c);
-        c.setPriorityScore(score);
-        return complaintRepository.save(c);
+        Complaint complaint = new Complaint();
+        complaint.setTitle(req.getTitle());
+        complaint.setDescription(req.getDescription());
+        complaint.setCategory(req.getCategory());
+        complaint.setChannel(req.getChannel());
+        complaint.setSeverity(req.getSeverity());
+        complaint.setUrgency(req.getUrgency());
+        complaint.setCustomer(user);
+
+        int score = priorityRuleService.computePriorityScore(complaint);
+        complaint.setPriorityScore(score);
+
+        return complaintRepository.save(complaint);
     }
 
     @Override
