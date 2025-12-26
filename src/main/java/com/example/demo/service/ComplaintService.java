@@ -1,16 +1,34 @@
-package com.example.demo.service;
+package com.example.demo.security;
 
-import com.example.demo.dto.ComplaintRequest;
-import com.example.demo.entity.Complaint;
 import com.example.demo.entity.User;
+import com.example.demo.repository.UserRepository;
+import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Collections;
 
-public interface ComplaintService {
+@Service
+public class CustomUserDetailsService {
 
-    Complaint submitComplaint(ComplaintRequest request, User customer);
+    private final UserRepository userRepository;
 
-    List<Complaint> getComplaintsForUser(User customer);
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
-    List<Complaint> getPrioritizedComplaints();
+    // Used ONLY in tests
+    public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                Collections.singleton(
+                        new org.springframework.security.core.authority.SimpleGrantedAuthority(
+                                "ROLE_" + user.getRole().name()
+                        )
+                )
+        );
+    }
 }
