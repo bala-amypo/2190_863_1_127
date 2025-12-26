@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.PriorityRule;
 import com.example.demo.service.PriorityRuleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,14 +11,15 @@ import java.util.List;
 @RequestMapping("/rules")
 public class PriorityRuleController {
 
-    private final PriorityRuleService service;
+    private final PriorityRuleService priorityRuleService;
 
-    public PriorityRuleController(PriorityRuleService service) {
-        this.service = service;
+    @Autowired
+    public PriorityRuleController(PriorityRuleService priorityRuleService) {
+        this.priorityRuleService = priorityRuleService;
     }
 
     @GetMapping("/all")
     public List<PriorityRule> getAllRules() {
-        return service.getActiveRules();
+        return priorityRuleService.getActiveRules();
     }
 }

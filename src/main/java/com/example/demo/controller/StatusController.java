@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.Complaint;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,7 +10,8 @@ import java.util.List;
 public class StatusController {
 
     @GetMapping("/history/{complaintId}")
-    public List<String> getHistory(@PathVariable Long complaintId) {
-        return List.of();
+    public String getHistory(@PathVariable Long complaintId) {
+        // For simplicity, returning a placeholder string
+        return "History for complaint " + complaintId;
     }
 }
