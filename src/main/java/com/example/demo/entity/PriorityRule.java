@@ -4,78 +4,75 @@ import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 @Entity
-@Table(name = "priority_rules")
 public class PriorityRule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
+    // ===== Existing fields (kept) =====
+    private String category;
+    private String description;
+    private int baseScore;
+
+    // ===== Required by tests =====
     private String ruleName;
 
-    private String description;
+    private int weight;
 
-    private Integer weight;
-
-    private boolean active = true; // DEFAULT TRUE (IMPORTANT)
+    private boolean active = true;
 
     @ManyToMany(mappedBy = "priorityRules")
     private Set<Complaint> complaints = new HashSet<>();
 
     // ===== Constructors =====
-
     public PriorityRule() {
-        // default constructor
+        this.baseScore = 10;
+        this.weight = this.baseScore; // keep logic consistent
+        this.active = true;
     }
 
-    // ===== Getters and Setters =====
+    // ===== Getters / Setters =====
+    public Long getId() { return id; }
 
-    public Long getId() {
-        return id;
-    }
- 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // ---- ruleName ----
+    public String getRuleName() { return ruleName; }
+    public void setRuleName(String ruleName) { this.ruleName = ruleName; }
 
-    public String getRuleName() {
-        return ruleName;
-    }
- 
-    public void setRuleName(String ruleName) {
-        this.ruleName = ruleName;
-    }
+    // ---- category (legacy) ----
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 
-    public String getDescription() {
-        return description;
-    }
- 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    // ---- description ----
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public Integer getWeight() {
-        return weight;
-    }
- 
-    public void setWeight(Integer weight) {
+    // ---- weight (TEST EXPECTED) ----
+    public int getWeight() { return weight; }
+    public void setWeight(int weight) {
         this.weight = weight;
+        this.baseScore = weight; // keep in sync
     }
 
-    public boolean isActive() {
-        return active;
-    }
- 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public Set<Complaint> getComplaints() {
-        return complaints;
+    // ---- baseScore (legacy) ----
+    public int getBaseScore() { return baseScore; }
+    public void setBaseScore(int baseScore) {
+        this.baseScore = baseScore;
+        this.weight = baseScore;
     }
 
-    public void setComplaints(Set<Complaint> complaints) {
-        this.complaints = complaints;
-    }
+    // ---- active ----
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
+
+    // ---- complaints ----
+    public Set<Complaint> getComplaints() { return complaints; }
+    public void setId(Long id) {
+    this.id = id;
+}
+
 }
