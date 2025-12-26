@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "priority_rules")
 public class PriorityRule {
 
     @Id
@@ -20,7 +19,7 @@ public class PriorityRule {
     @ManyToMany(mappedBy = "priorityRules")
     private Set<Complaint> complaints = new HashSet<>();
 
-    // Getters and setters
+    // getters & setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -37,5 +36,4 @@ public class PriorityRule {
     public void setActive(boolean active) { this.active = active; }
 
     public Set<Complaint> getComplaints() { return complaints; }
-    public void setComplaints(Set<Complaint> complaints) { this.complaints = complaints; }
 }
