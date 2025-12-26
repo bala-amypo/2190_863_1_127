@@ -1,9 +1,9 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.User;
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -23,20 +22,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registerCustomer(String fullName, String email, String password) {
-        if (userRepository.findByEmail(email).isPresent()) {
-            throw new RuntimeException("Email already exists");
+        Optional<User> existing = userRepository.findByEmail(email);
+        if (existing.isPresent()) {
+            throw new BadRequestException("Email already exists: " + email);
         }
-        User u = new User();
-        u.setFullName(fullName);
-        u.setEmail(email);
-        u.setPassword(passwordEncoder.encode(password));
-        u.setRole(User.Role.CUSTOMER);
-        return userRepository.save(u);
+        User user = new User();
+        user.setFullName(fullName);
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setRole(User.Role.CUSTOMER);
+        return userRepository.save(user);
     }
 
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new BadRequestException("User not found: " + email));
     }
 }

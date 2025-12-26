@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.AuthResponse;
+import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +20,28 @@ public class AuthController {
 
     @PostMapping("/register")
     public AuthResponse register(@RequestBody AuthRequest request) {
-        // call userService.registerCustomer
-        return new AuthResponse("User registered successfully");
+        User user = userService.registerCustomer(
+                request.getFullName(),
+                request.getEmail(),
+                request.getPassword()
+        );
+        return new AuthResponse(
+                "User registered successfully",
+                user.getEmail(),
+                user.getId(),
+                user.getRole().name()
+        );
     }
 
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest request) {
         // login logic here
-        return new AuthResponse("Login successful");
+        User user = userService.findByEmail(request.getEmail());
+        return new AuthResponse(
+                "Login successful",
+                user.getEmail(),
+                user.getId(),
+                user.getRole().name()
+        );
     }
 }

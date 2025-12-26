@@ -4,33 +4,36 @@ import com.example.demo.entity.Complaint;
 import com.example.demo.entity.PriorityRule;
 import com.example.demo.repository.PriorityRuleRepository;
 import com.example.demo.service.PriorityRuleService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class PriorityRuleServiceImpl implements PriorityRuleService {
 
-    private final PriorityRuleRepository repository;
+    private final PriorityRuleRepository priorityRuleRepository;
 
-    public PriorityRuleServiceImpl(PriorityRuleRepository repository) {
-        this.repository = repository;
+    public PriorityRuleServiceImpl(PriorityRuleRepository priorityRuleRepository) {
+        this.priorityRuleRepository = priorityRuleRepository;
+    }
+
+    @Override
+    public List<PriorityRule> getActiveRules() {
+        return priorityRuleRepository.findByActiveTrue();
     }
 
     @Override
     public int computePriorityScore(Complaint complaint) {
         int score = 0;
-
-        if (complaint.getSeverity() != null) score += complaint.getSeverity().ordinal();
-        if (complaint.getUrgency() != null) score += complaint.getUrgency().ordinal();
-
-        List<PriorityRule> rules = repository.findByActiveTrue();
+        List<PriorityRule> rules = getActiveRules();
         for (PriorityRule rule : rules) {
-            score += rule.getWeight();
+            if (rule.isActive()) {
+                // simple example: add weight if severity matches HIGH/CRITICAL
+                if (complaint.getSeverity() == Complaint.Severity.HIGH || complaint.getSeverity() == Complaint.Severity.CRITICAL) {
+                    score += rule.getWeight();
+                }
+            }
         }
         return score;
-    }
-
-    @Override
-    public List<PriorityRule> getActiveRules() {
-        return repository.findByActiveTrue();
     }
 }

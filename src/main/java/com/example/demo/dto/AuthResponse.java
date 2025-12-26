@@ -1,17 +1,17 @@
 package com.example.demo.dto;
 
 public class AuthResponse {
-
     private String message;
     private String email;
     private Long userId;
     private String role;
 
-    // Default constructor
-    public AuthResponse() {
+    public AuthResponse() {}
+
+    public AuthResponse(String message) {
+        this.message = message;
     }
 
-    // Full constructor
     public AuthResponse(String message, String email, Long userId, String role) {
         this.message = message;
         this.email = email;
@@ -19,12 +19,7 @@ public class AuthResponse {
         this.role = role;
     }
 
-    // Single-argument constructor for simple messages
-    public AuthResponse(String message) {
-        this.message = message;
-    }
-
-    // Getters and setters
+    // Getters & Setters
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }
     public String getEmail() { return email; }
