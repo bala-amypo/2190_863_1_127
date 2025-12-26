@@ -10,13 +10,20 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service   // 🔴 REQUIRED
+@Service
 public class ComplaintServiceImpl implements ComplaintService {
 
     private final ComplaintRepository complaintRepository;
     private final PriorityRuleService priorityRuleService;
 
-    // constructor signature MUST match test
+    // ✅ Constructor USED BY SPRING at runtime
+    public ComplaintServiceImpl(ComplaintRepository complaintRepository,
+                                PriorityRuleService priorityRuleService) {
+        this.complaintRepository = complaintRepository;
+        this.priorityRuleService = priorityRuleService;
+    }
+
+    // ✅ Constructor USED BY TESTS (DO NOT REMOVE)
     public ComplaintServiceImpl(ComplaintRepository complaintRepository,
                                 Object unused1,
                                 Object unused2,
