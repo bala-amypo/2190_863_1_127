@@ -1,24 +1,39 @@
 package com.example.demo.servlet;
 
-import jakarta.servlet.http.*;
 import jakarta.servlet.ServletException;
-import java.io.IOException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
+@WebServlet("/echo")
 public class SimpleEchoServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req,
-                         HttpServletResponse resp)
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response)
             throws ServletException, IOException {
 
-        resp.setContentType("text/plain");
-        String name = req.getParameter("name");
+        response.setContentType("text/plain");
+        PrintWriter out = response.getWriter();
 
-        if (name == null || name.trim().isEmpty()) {
-            resp.getWriter().write("Hello, Guest");
-        } else {
-            resp.getWriter().write("Hello, " + name.trim());
+        String message = request.getParameter("message");
+
+        if (message == null) {
+            message = "Hello from SimpleEchoServlet";
         }
-        resp.setStatus(HttpServletResponse.SC_OK);
+
+        out.write(message);
+        out.flush();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request,
+                          HttpServletResponse response)
+            throws ServletException, IOException {
+        doGet(request, response);
     }
 }
