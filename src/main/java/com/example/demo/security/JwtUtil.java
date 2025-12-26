@@ -6,18 +6,18 @@ import org.springframework.stereotype.Component;
 public class JwtUtil {
 
     public String extractRole(String token) {
-        return null;
+        return null; // mocked in tests
     }
 
     public String extractEmail(String token) {
-        return null;
+        return null; // mocked in tests
     }
 
     public Long extractUserId(String token) {
-        return null;
+        return null; // mocked in tests
     }
 
-    public boolean validateToken(String token, String email) {
-        return false;
+    public boolean validateToken(String token, String username) {
+        return false; // mocked in tests
     }
 }

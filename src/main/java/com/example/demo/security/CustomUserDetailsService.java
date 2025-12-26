@@ -2,9 +2,12 @@ package com.example.demo.security;
 
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.*;
+
 import java.util.Collections;
 
-public class CustomUserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -12,25 +15,20 @@ public class CustomUserDetailsService {
         this.userRepository = userRepository;
     }
 
-    public UserDetails loadUserByUsername(String email) {
+    @Override
+    public UserDetails loadUserByUsername(String email)
+            throws UsernameNotFoundException {
+
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found"));
 
-        return new UserDetails() {
-            @Override
-            public String getUsername() {
-                return user.getEmail();
-            }
+        String role = "ROLE_" + user.getRole().name();
 
-            @Override
-            public String getPassword() {
-                return user.getPassword();
-            }
-
-            @Override
-            public java.util.Collection<String> getAuthorities() {
-                return Collections.singleton("ROLE_" + user.getRole().name());
-            }
-        };
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority(role))
+        );
     }
 }
