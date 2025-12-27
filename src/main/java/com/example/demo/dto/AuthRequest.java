@@ -6,18 +6,9 @@ public class AuthRequest {
     private String email;
     private String password;
 
-    // Required for JSON deserialization
     public AuthRequest() {
     }
 
-    // Optional convenience constructor
-    public AuthRequest(String fullName, String email, String password) {
-        this.fullName = fullName;
-        this.email = email;
-        this.password = password;
-    }
-
-    // Getters & Setters
     public String getFullName() {
         return fullName;
     }
