@@ -18,7 +18,7 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-    // ✅ ADD THIS BEAN (ONLY CHANGE NEEDED)
+    // ✅ Required for UserServiceImpl (NO new file)
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -32,8 +32,20 @@ public class SecurityConfig {
             .sessionManagement(sm ->
                     sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/auth/**").permitAll()
-                    .anyRequest().authenticated()
+
+                // ✅ AUTH ENDPOINTS
+                .requestMatchers("/auth/**").permitAll()
+
+                // ✅ SWAGGER / OPENAPI
+                .requestMatchers(
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/v3/api-docs",
+                        "/v3/api-docs/**"
+                ).permitAll()
+
+                // 🔒 EVERYTHING ELSE
+                .anyRequest().authenticated()
             )
             .addFilterBefore(
                     jwtAuthenticationFilter,
