@@ -6,25 +6,22 @@ public class AuthResponse {
     private String token;
     private Long userId;
 
-    // ✅ REQUIRED: used by existing tests
+    // REQUIRED BY TESTS
     public AuthResponse(String message) {
         this.message = message;
     }
 
-    // ✅ REQUIRED: used by existing tests
     public AuthResponse(String message, String token) {
         this.message = message;
         this.token = token;
     }
 
-    // ✅ NEW: used only at runtime (safe for tests)
     public AuthResponse(String message, String token, Long userId) {
         this.message = message;
         this.token = token;
         this.userId = userId;
     }
 
-    // -------- Getters --------
     public String getMessage() {
         return message;
     }
@@ -36,17 +33,40 @@ public class AuthResponse {
     public Long getUserId() {
         return userId;
     }
+}
+package com.example.demo.dto;
 
-    // -------- Setters --------
-    public void setMessage(String message) {
+public class AuthResponse {
+
+    private String message;
+    private String token;
+    private Long userId;
+
+    // REQUIRED BY TESTS
+    public AuthResponse(String message) {
         this.message = message;
     }
 
-    public void setToken(String token) {
+    public AuthResponse(String message, String token) {
+        this.message = message;
         this.token = token;
     }
 
-    public void setUserId(Long userId) {
+    public AuthResponse(String message, String token, Long userId) {
+        this.message = message;
+        this.token = token;
         this.userId = userId;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public Long getUserId() {
+        return userId;
     }
 }

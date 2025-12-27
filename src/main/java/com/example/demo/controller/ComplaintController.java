@@ -26,59 +26,53 @@ public class ComplaintController {
         this.jwtUtil = jwtUtil;
     }
 
-    // ==================================================
+    // ===============================
     // POST /complaints/submit
-    // ==================================================
+    // ===============================
     @PostMapping("/submit")
     public Complaint submitComplaint(
             @RequestBody ComplaintRequest request,
             @RequestHeader("Authorization") String authHeader
     ) {
-        // Remove Bearer + possible quotes (Swagger safe)
         String token = authHeader.substring(7).replace("\"", "");
-
-        // Extract logged-in user
         String email = jwtUtil.extractEmail(token);
-        User customer = userService.findByEmail(email);
 
-        // Submit complaint
-        return complaintService.submitComplaint(request, customer);
+        User user = userService.findByEmail(email);
+        return complaintService.submitComplaint(request, user);
     }
 
-    // ==================================================
+    // ===============================
     // GET /complaints/user/{userId}
-    // ==================================================
+    // ===============================
     @GetMapping("/user/{userId}")
-    public List<Complaint> getUserComplaints(@PathVariable Long userId) {
+    public List<Complaint> getComplaintsForUser(
+            @PathVariable Long userId,
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        // userId kept for API compatibility
+        String token = authHeader.substring(7).replace("\"", "");
+        String email = jwtUtil.extractEmail(token);
 
-        // IMPORTANT: load managed entity (not new User())
-        User user = userService.findById(userId);
-
+        User user = userService.findByEmail(email);
         return complaintService.getComplaintsForUser(user);
     }
 
-    // ==================================================
+    // ===============================
     // GET /complaints/prioritized
-    // ==================================================
+    // ===============================
     @GetMapping("/prioritized")
     public List<Complaint> getPrioritizedComplaints() {
         return complaintService.getPrioritizedComplaints();
     }
 
-    // ==================================================
+    // ===============================
     // PUT /complaints/status/{id}
-    // ==================================================
+    // ===============================
     @PutMapping("/status/{id}")
-    public Complaint updateStatus(@PathVariable Long id,
-                                  @RequestParam Complaint.Status status) {
-
-        // Fetch complaint
-        Complaint complaint = complaintService.getById(id);
-
-        // Update status
-        complaint.setStatus(status);
-
-        // Save and return
-        return complaintService.save(complaint);
+    public Complaint updateStatus(
+            @PathVariable Long id,
+            @RequestParam Complaint.Status status
+    ) {
+        return complaintService.updateStatus(id, status);
     }
 }
