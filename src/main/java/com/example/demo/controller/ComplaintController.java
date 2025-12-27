@@ -49,7 +49,7 @@ public class ComplaintController {
             @PathVariable Long userId,
             @RequestHeader("Authorization") String authHeader
     ) {
-        // userId kept for API compatibility
+        // userId kept only for API compatibility
         String token = authHeader.substring(7).replace("\"", "");
         String email = jwtUtil.extractEmail(token);
 
@@ -73,6 +73,10 @@ public class ComplaintController {
             @PathVariable Long id,
             @RequestParam Complaint.Status status
     ) {
-        return complaintService.updateStatus(id, status);
+        // Service does not support status update yet
+        // Endpoint kept ONLY to avoid Swagger / API break
+        throw new UnsupportedOperationException(
+                "Status update not implemented yet"
+        );
     }
 }
