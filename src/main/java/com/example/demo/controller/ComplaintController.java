@@ -26,6 +26,9 @@ public class ComplaintController {
         this.jwtUtil = jwtUtil;
     }
 
+    // ===============================
+    // POST /complaints/submit
+    // ===============================
     @PostMapping("/submit")
     public Complaint submitComplaint(
             @RequestBody ComplaintRequest request,
@@ -38,6 +41,9 @@ public class ComplaintController {
         return complaintService.submitComplaint(request, user);
     }
 
+    // ===============================
+    // GET /complaints/user/{userId}
+    // ===============================
     @GetMapping("/user/{userId}")
     public List<Complaint> getComplaintsForUser(
             @PathVariable Long userId,
@@ -50,16 +56,23 @@ public class ComplaintController {
         return complaintService.getComplaintsForUser(user);
     }
 
+    // ===============================
+    // GET /complaints/prioritized
+    // ===============================
     @GetMapping("/prioritized")
     public List<Complaint> getPrioritizedComplaints() {
         return complaintService.getPrioritizedComplaints();
     }
 
+    // ===============================
+    // PUT /complaints/status/{id}
+    // ===============================
     @PutMapping("/status/{id}")
-    public Complaint updateStatus(
+    public void updateStatus(
             @PathVariable Long id,
             @RequestParam Complaint.Status status
     ) {
-        return complaintService.updateStatus(id, status);
+        // Call EXISTING service method
+        complaintService.updateComplaintStatus(id, status.name());
     }
 }
