@@ -11,6 +11,23 @@ public class ComplaintRequest {
     private Complaint.Severity severity;
     private Complaint.Urgency urgency;
 
+    // Required for JSON deserialization
+    public ComplaintRequest() {
+    }
+
+    // Optional constructor
+    public ComplaintRequest(String title, String description, String category,
+                            String channel, Complaint.Severity severity,
+                            Complaint.Urgency urgency) {
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.channel = channel;
+        this.severity = severity;
+        this.urgency = urgency;
+    }
+
+    // Getters & Setters
     public String getTitle() {
         return title;
     }
