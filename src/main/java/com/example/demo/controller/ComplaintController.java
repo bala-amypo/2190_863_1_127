@@ -68,11 +68,11 @@ public class ComplaintController {
     // PUT /complaints/status/{id}
     // ===============================
     @PutMapping("/status/{id}")
-    public void updateStatus(
+    public String updateStatus(
             @PathVariable Long id,
             @RequestParam Complaint.Status status
     ) {
-        // Call EXISTING service method
         complaintService.updateComplaintStatus(id, status.name());
+        return "Complaint status updated successfully";
     }
 }
