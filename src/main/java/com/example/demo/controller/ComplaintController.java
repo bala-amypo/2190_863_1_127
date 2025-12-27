@@ -26,56 +26,59 @@ public class ComplaintController {
         this.jwtUtil = jwtUtil;
     }
 
-    // --------------------------------------------------
-    // POST /submit  → Submit complaint
-    // --------------------------------------------------
+    // ==================================================
+    // POST /complaints/submit
+    // ==================================================
     @PostMapping("/submit")
     public Complaint submitComplaint(
             @RequestBody ComplaintRequest request,
             @RequestHeader("Authorization") String authHeader
     ) {
-        String token = authHeader.substring(7);
-        String email = jwtUtil.extractEmail(token);
+        // Remove Bearer + possible quotes (Swagger safe)
+        String token = authHeader.substring(7).replace("\"", "");
 
+        // Extract logged-in user
+        String email = jwtUtil.extractEmail(token);
         User customer = userService.findByEmail(email);
+
+        // Submit complaint
         return complaintService.submitComplaint(request, customer);
     }
 
-    // --------------------------------------------------
-    // GET /user/{userId} → Get user complaints
-    // --------------------------------------------------
+    // ==================================================
+    // GET /complaints/user/{userId}
+    // ==================================================
     @GetMapping("/user/{userId}")
     public List<Complaint> getUserComplaints(@PathVariable Long userId) {
 
-        // IMPORTANT:
-        // We do NOT call any new service method
-        // This keeps ALL tests safe
-        User user = new User();
-        user.setId(userId);
+        // IMPORTANT: load managed entity (not new User())
+        User user = userService.findById(userId);
 
         return complaintService.getComplaintsForUser(user);
     }
 
-    // --------------------------------------------------
-    // GET /prioritized → Get all prioritized complaints
-    // --------------------------------------------------
+    // ==================================================
+    // GET /complaints/prioritized
+    // ==================================================
     @GetMapping("/prioritized")
     public List<Complaint> getPrioritizedComplaints() {
         return complaintService.getPrioritizedComplaints();
     }
 
-    // --------------------------------------------------
-    // PUT /status/{id} → Update status (stub, test-safe)
-    // --------------------------------------------------
+    // ==================================================
+    // PUT /complaints/status/{id}
+    // ==================================================
     @PutMapping("/status/{id}")
     public Complaint updateStatus(@PathVariable Long id,
                                   @RequestParam Complaint.Status status) {
 
-        // Stub implementation to satisfy API contract
-        // No service/entity changes
-        // No test failures
-        throw new UnsupportedOperationException(
-                "Status update not implemented yet"
-        );
+        // Fetch complaint
+        Complaint complaint = complaintService.getById(id);
+
+        // Update status
+        complaint.setStatus(status);
+
+        // Save and return
+        return complaintService.save(complaint);
     }
 }
