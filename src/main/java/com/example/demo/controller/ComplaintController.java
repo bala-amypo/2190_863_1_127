@@ -26,9 +26,6 @@ public class ComplaintController {
         this.jwtUtil = jwtUtil;
     }
 
-    // ===============================
-    // POST /complaints/submit
-    // ===============================
     @PostMapping("/submit")
     public Complaint submitComplaint(
             @RequestBody ComplaintRequest request,
@@ -41,15 +38,11 @@ public class ComplaintController {
         return complaintService.submitComplaint(request, user);
     }
 
-    // ===============================
-    // GET /complaints/user/{userId}
-    // ===============================
     @GetMapping("/user/{userId}")
     public List<Complaint> getComplaintsForUser(
             @PathVariable Long userId,
             @RequestHeader("Authorization") String authHeader
     ) {
-        // userId kept only for API compatibility
         String token = authHeader.substring(7).replace("\"", "");
         String email = jwtUtil.extractEmail(token);
 
@@ -57,26 +50,16 @@ public class ComplaintController {
         return complaintService.getComplaintsForUser(user);
     }
 
-    // ===============================
-    // GET /complaints/prioritized
-    // ===============================
     @GetMapping("/prioritized")
     public List<Complaint> getPrioritizedComplaints() {
         return complaintService.getPrioritizedComplaints();
     }
 
-    // ===============================
-    // PUT /complaints/status/{id}
-    // ===============================
     @PutMapping("/status/{id}")
     public Complaint updateStatus(
             @PathVariable Long id,
             @RequestParam Complaint.Status status
     ) {
-        // Service does not support status update yet
-        // Endpoint kept ONLY to avoid Swagger / API break
-        throw new UnsupportedOperationException(
-                "Status update not implemented yet"
-        );
+        return complaintService.updateStatus(id, status);
     }
 }
