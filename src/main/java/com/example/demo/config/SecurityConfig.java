@@ -18,25 +18,29 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-    // ✅ Required for UserServiceImpl (NO new file)
+    // ✅ Required for UserServiceImpl
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
 
         http
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sm ->
-                    sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
 
-                // ✅ AUTH ENDPOINTS
+                // AUTH
                 .requestMatchers("/auth/**").permitAll()
 
-                // ✅ SWAGGER / OPENAPI
+                // ✅ COMPLAINT SUBMIT
+                .requestMatchers("/complaints/submit").permitAll()
+
+                // SWAGGER
                 .requestMatchers(
                         "/swagger-ui.html",
                         "/swagger-ui/**",
@@ -44,12 +48,12 @@ public class SecurityConfig {
                         "/v3/api-docs/**"
                 ).permitAll()
 
-                // 🔒 EVERYTHING ELSE
+                // EVERYTHING ELSE
                 .anyRequest().authenticated()
             )
             .addFilterBefore(
-                    jwtAuthenticationFilter,
-                    UsernamePasswordAuthenticationFilter.class
+                jwtAuthenticationFilter,
+                UsernamePasswordAuthenticationFilter.class
             );
 
         return http.build();
