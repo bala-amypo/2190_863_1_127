@@ -19,6 +19,9 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
+    // --------------------------------
+    // REGISTER
+    // --------------------------------
     @PostMapping("/register")
     public AuthResponse register(@RequestBody AuthRequest request) {
 
@@ -28,20 +31,31 @@ public class AuthController {
                 request.getPassword()
         );
 
+        // ✅ Existing tests expect ONLY message
         return new AuthResponse("User registered successfully");
     }
 
+    // --------------------------------
+    // LOGIN + TOKEN + USER ID
+    // --------------------------------
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest request) {
 
+        // Find user
         User user = userService.findByEmail(request.getEmail());
 
+        // Generate JWT
         String token = jwtUtil.generateToken(
                 user.getEmail(),
                 user.getRole().name(),
                 user.getId()
         );
 
-        return new AuthResponse("Login successful", token);
+        // ✅ Return token + userId (tests unaffected)
+        return new AuthResponse(
+                "Login successful",
+                token,
+                user.getId()
+        );
     }
 }
