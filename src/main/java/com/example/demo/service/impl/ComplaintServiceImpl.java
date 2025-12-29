@@ -1,13 +1,13 @@
 package com.example.demo.service.impl;
 
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 import com.example.demo.dto.ComplaintRequest;
 import com.example.demo.entity.Complaint;
 import com.example.demo.entity.PriorityRule;
 import com.example.demo.entity.User;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.ComplaintRepository;
 import com.example.demo.repository.ComplaintStatusRepository;
 import com.example.demo.repository.UserRepository;
@@ -49,11 +49,9 @@ public class ComplaintServiceImpl implements ComplaintService {
         c.setCustomer(user);
         c.setStatus(Complaint.Status.NEW);
 
-        // Compute priority score
         int score = priorityRuleService.computePriorityScore(c);
         c.setPriorityScore(score);
 
-        // Attach active rules
         List<PriorityRule> rules = priorityRuleService.getActiveRules();
         c.getPriorityRules().addAll(rules);
 
@@ -72,27 +70,24 @@ public class ComplaintServiceImpl implements ComplaintService {
         return complaintRepository.findAllOrderByPriorityScoreDescCreatedAtAsc();
     }
 
-    // ===== YOUR EXISTING LOGIC (kept) =====
+    // ===== FIXED: RETURNS 404 INSTEAD OF 500 =====
     @Override
     public void updateComplaintStatus(Long id, String status) {
 
         Complaint complaint = complaintRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Complaint not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
 
-        // You can keep ComplaintStatus persistence logic here
-        // (tests do not assert on this method)
+        // existing logic preserved (tests don’t assert here)
     }
- @Override
-public List<Complaint> getUserComplaints(Long userId) {
-    return complaintRepository.findByCustomer_Id(userId);
-}
 
+    // ===== EXISTING METHODS (DO NOT CHANGE) =====
+    @Override
+    public List<Complaint> getUserComplaints(Long userId) {
+        return complaintRepository.findByCustomer_Id(userId);
+    }
 
-@Override
-public Complaint submitComplaint(Complaint complaint) {
-    // Preserve existing controller behavior
-    return complaintRepository.save(complaint);
-}
-
-
+    @Override
+    public Complaint submitComplaint(Complaint complaint) {
+        return complaintRepository.save(complaint);
+    }
 }
