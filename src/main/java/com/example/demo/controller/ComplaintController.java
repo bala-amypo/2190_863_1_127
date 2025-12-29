@@ -6,6 +6,9 @@ import com.example.demo.entity.User;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.ComplaintService;
 import com.example.demo.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +32,13 @@ public class ComplaintController {
     // ===============================
     // POST /complaints/submit
     // ===============================
+    @Operation(summary = "Submit a new complaint")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Complaint submitted successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid complaint data"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @PostMapping("/submit")
     public Complaint submitComplaint(
             @RequestBody ComplaintRequest request,
@@ -44,6 +54,13 @@ public class ComplaintController {
     // ===============================
     // GET /complaints/user/{userId}
     // ===============================
+    @Operation(summary = "Get complaints for logged-in user")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Complaints retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping("/user/{userId}")
     public List<Complaint> getComplaintsForUser(
             @PathVariable Long userId,
@@ -59,6 +76,11 @@ public class ComplaintController {
     // ===============================
     // GET /complaints/prioritized
     // ===============================
+    @Operation(summary = "Get all complaints sorted by priority")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Prioritized complaints retrieved"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping("/prioritized")
     public List<Complaint> getPrioritizedComplaints() {
         return complaintService.getPrioritizedComplaints();
@@ -67,6 +89,13 @@ public class ComplaintController {
     // ===============================
     // PUT /complaints/status/{id}
     // ===============================
+    @Operation(summary = "Update complaint status")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Complaint status updated"),
+            @ApiResponse(responseCode = "400", description = "Invalid status value"),
+            @ApiResponse(responseCode = "404", description = "Complaint not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @PutMapping("/status/{id}")
     public String updateStatus(
             @PathVariable Long id,
