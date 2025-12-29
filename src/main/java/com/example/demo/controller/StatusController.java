@@ -12,10 +12,11 @@ import com.example.demo.service.ComplaintStatusService;
 public class StatusController{
 
     @Autowired
-    ComplaintStatusService service;
+        ComplaintStatusService service;
 
-    @GetMapping("/history/{id}")
-    public List<ComplaintStatus> getComplaintStatus(@PathVariable Long id){
-        return service.getComplaintStatus(id);
-    }
-}
+            @GetMapping("/history/{id}")
+                public List<ComplaintStatus> getComplaintStatus(@PathVariable Long id){
+                        return service.getComplaintStatus(id);
+                            }
+                            }
+                            
